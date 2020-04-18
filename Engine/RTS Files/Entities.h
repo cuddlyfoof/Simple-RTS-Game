@@ -48,7 +48,7 @@ private:
 	//Variables************************************************************
 	int uuid = 1;
 	const float minSpeed = 1.2;
-	int resources = 0;
+	int resources = 1000;
 	//Vector6 Struct arrays****
 	//Units *******************
 	std::vector<Vector6> staticDudesPos;

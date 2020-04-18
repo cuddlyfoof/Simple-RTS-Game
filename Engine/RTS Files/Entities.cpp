@@ -1,7 +1,7 @@
 #include "Entities.h"
-#include "Graphics.h"
+#include "../Graphics.h"
 #include <cmath>
-#include "Game.h"
+#include "../Game.h"
 
 Entities::Entities()
 {
@@ -31,7 +31,7 @@ void Entities::addEntityToQueue(int _entNum, int _x, int _y)
 	{
 	//Add Dude : 0
 	case 0 :
-		//addVector6Entity(staticDudesPos, _x, _y);
+		addVector6Entity(staticDudesPos, _entNum, _x, _y);
 		break;
 	//Add Hive : 1
 	case 1 :
@@ -41,15 +41,17 @@ void Entities::addEntityToQueue(int _entNum, int _x, int _y)
 			{
 				staticSelectedDudesPos.back().dx = (float)_x;
 				staticSelectedDudesPos.back().dy = (float)_y;
-				queuedEntities.emplace_back(uuid, staticSelectedDudesPos[0].id, _x, _y, _entNum);
-				movingSelectedDudesPos.emplace_back(std::move(staticSelectedDudesPos[0]));
-				staticSelectedDudesPos.pop_back;
+				queuedEntities.emplace_back(uuid, staticSelectedDudesPos.back().id, _x, _y, _entNum);
+				movingSelectedDudesPos.emplace_back(std::move(staticSelectedDudesPos.back()));
+				staticSelectedDudesPos.pop_back();
+				resources -= 50;
 			}
 			else if (movingSelectedDudesPos.size() > 0)
 			{
 				movingSelectedDudesPos.back().dx = _x;
 				movingSelectedDudesPos.back().dy = _y;
 				queuedEntities.emplace_back(uuid, staticSelectedDudesPos[0].id, _x, _y, _entNum);
+				resources -= 50;
 			}
 		}
 		break;
@@ -81,14 +83,42 @@ void Entities::checkEntityQueue()
 		return (x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2) <= (r1 + r2) * (r1 + r2);
 	};
 
-	for (auto hive : hives)
+	float buildingRadius = 0.0f;
+	bool builderHasArrived = false;
+
+	for (auto it{queuedEntities.begin()}; it != queuedEntities.end();)
 	{
+		switch (it->entNum)
+		{
+		case 1 :
+			buildingRadius = Hive::radius;
+			break;
+		default:
+			break;
+		}
 		for (auto dude : movingSelectedDudesPos)
 		{
-			if (doCirclesOverlap())
+			if (doCirclesOverlap(dude.x, dude.y, Dude::radius, it->x, it->y, buildingRadius) && dude.id == it->builderUuid)
 			{
-
+				builderHasArrived = true;
+				break;
 			}
+		}
+		if (builderHasArrived)
+		{
+			switch (it->entNum)
+			{
+			case 1:
+				hivesPos.emplace_back(it->x, it->y, it->uuid);
+				hives.emplace_back(it->uuid);
+				it = queuedEntities.erase(it);
+			default:
+				break;
+			}
+		}
+		else
+		{
+			it++;
 		}
 	}
 }
@@ -264,10 +294,11 @@ void Entities::collisionCheck(std::vector<Vector6>& ents1, std::vector<Vector6>&
 
 void Entities::update()
 {	
+	//move Dudes
 	updatePositions(movingDudesPos, staticDudesPos);
 	updatePositions(movingSelectedDudesPos, staticSelectedDudesPos);
 
-	//Not apart of the issue
+	//All the Collision Checks
 	collisionCheck(movingSelectedDudesPos, movingSelectedDudesPos);
 	collisionCheck(movingSelectedDudesPos, movingDudesPos);
 	collisionCheck(movingSelectedDudesPos, staticDudesPos);
@@ -278,6 +309,9 @@ void Entities::update()
 	collisionCheck(staticDudesPos, staticDudesPos);
 	collisionCheck(staticDudesPos, staticSelectedDudesPos);
 	collisionCheck(staticSelectedDudesPos, staticSelectedDudesPos);
+
+	//building check
+	checkEntityQueue();
 }
 
 void Entities::selectEntities(MainWindow& _wnd, int _x, int _y)

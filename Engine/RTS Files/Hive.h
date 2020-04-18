@@ -6,5 +6,4 @@ struct Hive
 	const int posID = 0;
 	static constexpr float diameter = 40.0f;
 	static constexpr float radius = (diameter / 2);
-	bool inBuildQueue = true;
 };
