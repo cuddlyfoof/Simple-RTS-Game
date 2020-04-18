@@ -5,34 +5,6 @@
 
 Entities::Entities()
 {
-#ifndef POO_COUNT
-#define POO_COUNT 0
-#endif // !1
-#ifndef DUDE_COUNT
-#define DUDE_COUNT 25
-#endif // !DUDE_COUNT
-
-	//std::random_device rd;
-	//std::mt19937 gen(rd());
-	//std::uniform_real_distribution<> disWidth(10.0, (Graphics::ScreenWidth - 40));
-	//std::uniform_real_distribution<> disHeight(10.0, (Graphics::ScreenHeight - 40));
-
-	///*poosPos.reserve(POO_COUNT);
-	//poos.reserve(POO_COUNT);
-	//for (int i = 0; i < (POO_COUNT); i++)
-	//{
-	//	poosPos.emplace_back(disWidth(gen), disHeight(gen), uuid);
-	//	poos.emplace_back(uuid);
-	//	uuid++;
-	//}*/
-	//dudesPos.reserve(DUDE_COUNT);
-	//dudes.reserve(DUDE_COUNT);
-	//for (int i = 0; i < DUDE_COUNT; i++)
-	//{
-	//	dudesPos.emplace_back(disWidth(gen), disHeight(gen), uuid);
-	//	dudes.emplace_back(uuid);
-	//	uuid++;
-	//}
 }
 
 Entities::~Entities()

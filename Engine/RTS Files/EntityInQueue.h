@@ -7,4 +7,5 @@ struct EntityInQueue
 	int builderUuid = 0;
 	float x = 100.0f;
 	float y = 100.0f;
+	int entNum
 };

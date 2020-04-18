@@ -1,9 +1,9 @@
 #pragma once
 
 #include <vector>
-#include <random>
 #include "Vector6.h"
 #include "Vector2.h"
+#include "EntityInQueue.h"
 #include "Dude.h"
 #include "Hive.h"
 #include "Graphics.h"
@@ -59,6 +59,7 @@ private:
 	std::vector<Vector2> selectedHivesPos;
 
 	//Unit and building Vectors
+	std::vector<EntityInQueue>
 	std::vector<Dude> dudes;
 	std::vector<Hive> hives;
 
