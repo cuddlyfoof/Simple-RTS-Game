@@ -6,8 +6,8 @@
 #include "EntityInQueue.h"
 #include "Dude.h"
 #include "Hive.h"
-#include "Graphics.h"
-#include "MainWindow.h"
+#include "../Graphics.h"
+#include "../MainWindow.h"
 #include <numeric>
 
 class Entities
@@ -28,6 +28,7 @@ public:
 
 private:
 	//Functions************************************************************
+	void checkEntityQueue();
 	void addVector6Entity(std::vector<Vector6>&, int, int, int);
 	void addVector2Entity(std::vector<Vector2>&, int, int, int);
 	void selectVector6(MainWindow&, std::vector<Vector6>&, std::vector<Vector6>&, const int, const int);
@@ -59,7 +60,7 @@ private:
 	std::vector<Vector2> selectedHivesPos;
 
 	//Unit and building Vectors
-	std::vector<EntityInQueue>
+	std::vector<EntityInQueue> queuedEntities;
 	std::vector<Dude> dudes;
 	std::vector<Hive> hives;
 

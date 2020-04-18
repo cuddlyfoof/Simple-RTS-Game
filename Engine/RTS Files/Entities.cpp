@@ -35,14 +35,23 @@ void Entities::addEntityToQueue(int _entNum, int _x, int _y)
 		break;
 	//Add Hive : 1
 	case 1 :
-		for (auto dude : staticSelectedDudesPos)
-		{
-			if (resources >= 50)
+		if (resources >= 50)
+		{			
+			if (staticSelectedDudesPos.size() > 0)
 			{
-				hives.emplace_back(uuid);
+				staticSelectedDudesPos.back().dx = (float)_x;
+				staticSelectedDudesPos.back().dy = (float)_y;
+				queuedEntities.emplace_back(uuid, staticSelectedDudesPos[0].id, _x, _y, _entNum);
+				movingSelectedDudesPos.emplace_back(std::move(staticSelectedDudesPos[0]));
+				staticSelectedDudesPos.pop_back;
+			}
+			else if (movingSelectedDudesPos.size() > 0)
+			{
+				movingSelectedDudesPos.back().dx = _x;
+				movingSelectedDudesPos.back().dy = _y;
+				queuedEntities.emplace_back(uuid, staticSelectedDudesPos[0].id, _x, _y, _entNum);
 			}
 		}
-		
 		break;
 	default:
 		break;
@@ -64,6 +73,25 @@ void Entities::addEntityToQueue(int _entNum, int _x, int _y)
 //		}
 //	}
 //}
+
+void Entities::checkEntityQueue()
+{
+	auto doCirclesOverlap = [](float x1, float y1, float r1, float x2, float y2, float r2)
+	{
+		return (x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2) <= (r1 + r2) * (r1 + r2);
+	};
+
+	for (auto hive : hives)
+	{
+		for (auto dude : movingSelectedDudesPos)
+		{
+			if (doCirclesOverlap())
+			{
+
+			}
+		}
+	}
+}
 
 void Entities::addVector6Entity(std::vector<Vector6>& _ents, int _entNum, int _x, int _y)
 {

@@ -16,59 +16,12 @@
     <Filter Include="Shaders">
       <UniqueIdentifier>{8b6c92a8-f65d-451e-80e3-d65773602b92}</UniqueIdentifier>
     </Filter>
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="ChiliWin.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Colors.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="DXErr.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Game.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Graphics.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Keyboard.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="MainWindow.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Mouse.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="ChiliException.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Resource.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Entities.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Old_Dude.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Dude.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Vector6.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Vector2.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Hive.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="EntityInQueue.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
+    <Filter Include="Header Files\RTS FILES">
+      <UniqueIdentifier>{a598d066-eee0-4bac-a68c-ce3e7f98f30c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\RTS FILES">
+      <UniqueIdentifier>{0a7b38d5-0c24-4e8b-8326-97f92173b810}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DXErr.cpp">
@@ -92,26 +45,29 @@
     <ClCompile Include="Mouse.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Entities.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Old_Dude.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Dude.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Vector6.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Vector2.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Hive.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="EntityInQueue.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="RTS Files\Dude.cpp">
+      <Filter>Source Files\RTS FILES</Filter>
+    </ClCompile>
+    <ClCompile Include="RTS Files\Entities.cpp">
+      <Filter>Source Files\RTS FILES</Filter>
+    </ClCompile>
+    <ClCompile Include="RTS Files\EntityInQueue.cpp">
+      <Filter>Source Files\RTS FILES</Filter>
+    </ClCompile>
+    <ClCompile Include="RTS Files\Hive.cpp">
+      <Filter>Source Files\RTS FILES</Filter>
+    </ClCompile>
+    <ClCompile Include="RTS Files\Poo.cpp">
+      <Filter>Source Files\RTS FILES</Filter>
+    </ClCompile>
+    <ClCompile Include="RTS Files\Vector2.cpp">
+      <Filter>Source Files\RTS FILES</Filter>
+    </ClCompile>
+    <ClCompile Include="RTS Files\Vector6.cpp">
+      <Filter>Source Files\RTS FILES</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -131,5 +87,62 @@
     <Image Include="Chili.ico">
       <Filter>Resource Files</Filter>
     </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="ChiliException.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ChiliWin.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Colors.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="DXErr.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Game.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Keyboard.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Mouse.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="RTS Files\Dude.h">
+      <Filter>Header Files\RTS FILES</Filter>
+    </ClInclude>
+    <ClInclude Include="RTS Files\Entities.h">
+      <Filter>Header Files\RTS FILES</Filter>
+    </ClInclude>
+    <ClInclude Include="RTS Files\EntityInQueue.h">
+      <Filter>Header Files\RTS FILES</Filter>
+    </ClInclude>
+    <ClInclude Include="RTS Files\Hive.h">
+      <Filter>Header Files\RTS FILES</Filter>
+    </ClInclude>
+    <ClInclude Include="RTS Files\Poo.h">
+      <Filter>Header Files\RTS FILES</Filter>
+    </ClInclude>
+    <ClInclude Include="RTS Files\Vector2.h">
+      <Filter>Header Files\RTS FILES</Filter>
+    </ClInclude>
+    <ClInclude Include="RTS Files\Vector6.h">
+      <Filter>Header Files\RTS FILES</Filter>
+    </ClInclude>
+    <ClInclude Include="MainWindow.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="FramebufferPS.shh" />
+    <None Include="FramebufferVS.shh" />
   </ItemGroup>
 </Project>
