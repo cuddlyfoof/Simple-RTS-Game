@@ -63,10 +63,14 @@ void Entities::addEntityToQueue(int _entNum, int _x, int _y)
 		break;
 	//Add Hive : 1
 	case 1 :
-		if (resources >= 50)
+		for (auto dude : staticSelectedDudesPos)
 		{
-			hives.emplace_back(uuid);
+			if (resources >= 50)
+			{
+				hives.emplace_back(uuid);
+			}
 		}
+		
 		break;
 	default:
 		break;
