@@ -117,12 +117,28 @@ void Game::UpdateModel()
 
 		if (wnd.kbd.KeyIsPressed('D'))
 		{
-			entities.addEntityToQueue(0, wnd.mouse.GetPosX(), wnd.mouse.GetPosY());
+			dWasPressed = true;
+		}
+		else
+		{
+			if (dWasPressed)
+			{
+				entities.addEntityToQueue(0, wnd.mouse.GetPosX(), wnd.mouse.GetPosY());
+			}
+			dWasPressed = false;
 		}
 
 		if (wnd.kbd.KeyIsPressed('H'))
 		{
-			entities.addEntityToQueue(1, wnd.mouse.GetPosX(), wnd.mouse.GetPosY());
+			hWasPressed = true;			
+		}
+		else
+		{
+			if (hWasPressed)
+			{
+				entities.addEntityToQueue(1, wnd.mouse.GetPosX(), wnd.mouse.GetPosY());
+			}
+			hWasPressed = false;
 		}
 	}	
 }

@@ -5,6 +5,7 @@
 #include "Vector2.h"
 #include "EntityInQueue.h"
 #include "Dude.h"
+#include "Poo.h"
 #include "Hive.h"
 #include "../Graphics.h"
 #include "../MainWindow.h"
@@ -39,6 +40,7 @@ private:
 	void applySpeedLimit(Vector6&, const float);
 	void applyFriction(Vector6&, const float);
 	//*************** Render stuffs:
+	void renderResources(Graphics&);
 	void renderSelectedDude(Graphics&, int, int, int);
 	void renderPoo(Graphics&, int, int, int);
 	void renderDude(Graphics&, int, int, int);
@@ -55,14 +57,18 @@ private:
 	std::vector<Vector6> movingDudesPos;
 	std::vector<Vector6> staticSelectedDudesPos;
 	std::vector<Vector6> movingSelectedDudesPos;
+	std::vector<Vector6> poosPos;
 	//Vector2 Buildings *******
-	std::vector<Vector2> hivesPos;
-	std::vector<Vector2> selectedHivesPos;
+	std::vector<Vector2> dudeHivesPos;
+	std::vector<Vector2> selectedDudeHivesPos;
+	std::vector<Vector2> pooHivesPos;
 
 	//Unit and building Vectors
 	std::vector<EntityInQueue> queuedEntities;
 	std::vector<Dude> dudes;
-	std::vector<Hive> hives;
+	std::vector<Hive> dudeHives;
+	std::vector<Poo> poos;
+	std::vector<Hive> pooHives;
 
 	//****************** Not Used yet
 	//std::vector<Vector6> poosPos;

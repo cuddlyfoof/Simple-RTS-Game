@@ -63,6 +63,9 @@
     <ClCompile Include="RTS Files\Hive.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="RTS Files\Poo.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="FramebufferPS.hlsl">
@@ -129,6 +132,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="RTS Files\Hive.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="RTS Files\Poo.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

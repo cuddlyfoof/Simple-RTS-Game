@@ -54,6 +54,8 @@ private:
     bool gameStart = false;
     bool rightWasPressed = false;
     bool leftWasPressed = false;
+    bool hWasPressed = false;
+    bool dWasPressed = false;
     int rightMouseX = 100;
     int rightMouseY = 100;
     int leftMouseX = 100;
