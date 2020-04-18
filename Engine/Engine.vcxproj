@@ -140,6 +140,7 @@
     <ClInclude Include="ChiliWin.h" />
     <ClInclude Include="Colors.h" />
     <ClInclude Include="Dude.h" />
+    <ClInclude Include="EntityInQueue.h" />
     <ClInclude Include="Hive.h" />
     <ClInclude Include="Old_Dude.h" />
     <ClInclude Include="Entities.h" />
@@ -157,6 +158,7 @@
     <ClCompile Include="Dude.cpp" />
     <ClCompile Include="Entities.cpp" />
     <ClCompile Include="DXErr.cpp" />
+    <ClCompile Include="EntityInQueue.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="Graphics.cpp" />
     <ClCompile Include="Hive.cpp" />
