@@ -146,6 +146,7 @@
     <ClCompile Include="RTS Files\Dude.cpp" />
     <ClCompile Include="RTS Files\Entities.cpp" />
     <ClCompile Include="RTS Files\EntityInQueue.cpp" />
+    <ClCompile Include="RTS Files\HealthEntity.cpp" />
     <ClCompile Include="RTS Files\Hive.cpp" />
     <ClCompile Include="RTS Files\Poo.cpp" />
     <ClCompile Include="RTS Files\Vector2.cpp" />
@@ -233,6 +234,7 @@
     <ClInclude Include="RTS Files\Dude.h" />
     <ClInclude Include="RTS Files\Entities.h" />
     <ClInclude Include="RTS Files\EntityInQueue.h" />
+    <ClInclude Include="RTS Files\HealthEntity.h" />
     <ClInclude Include="RTS Files\Hive.h" />
     <ClInclude Include="RTS Files\Poo.h" />
     <ClInclude Include="RTS Files\Vector2.h" />

@@ -7,6 +7,7 @@
 #include "Dude.h"
 #include "Poo.h"
 #include "Hive.h"
+#include "HealthEntity.h"
 #include "../Graphics.h"
 #include "../MainWindow.h"
 #include <numeric>
@@ -34,6 +35,8 @@ private:
 	void addVector2Entity(std::vector<Vector2>&, int, int, int);
 	void selectVector6(MainWindow&, std::vector<Vector6>&, std::vector<Vector6>&, const int, const int);
 	void selectVector2(MainWindow&, std::vector<Vector2>&, std::vector<Vector2>&, const int, const int);
+	void attackRangeCheck(std::vector<Vector6>&, std::vector<Vector6>&);
+	void runCollisions();
 	void collisionCheck(std::vector<Vector6>&, std::vector<Vector6>&);
 	void updatePositions(std::vector<Vector6>&, std::vector<Vector6>&);
 	//*************** Math Stuffs:	
@@ -62,6 +65,9 @@ private:
 	std::vector<Vector2> dudeHivesPos;
 	std::vector<Vector2> selectedDudeHivesPos;
 	std::vector<Vector2> pooHivesPos;
+
+	//Health
+	std::vector<HealthEntity> healthTracker;
 
 	//Unit and building Vectors
 	std::vector<EntityInQueue> queuedEntities;

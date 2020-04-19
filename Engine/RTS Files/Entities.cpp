@@ -316,17 +316,7 @@ void Entities::update()
 	updatePositions(movingDudesPos, staticDudesPos);
 	updatePositions(movingSelectedDudesPos, staticSelectedDudesPos);
 
-	//All the Collision Checks
-	collisionCheck(movingSelectedDudesPos, movingSelectedDudesPos);
-	collisionCheck(movingSelectedDudesPos, movingDudesPos);
-	collisionCheck(movingSelectedDudesPos, staticDudesPos);
-	collisionCheck(movingSelectedDudesPos, staticSelectedDudesPos);
-	collisionCheck(movingDudesPos, movingDudesPos);
-	collisionCheck(movingDudesPos, staticDudesPos);
-	collisionCheck(movingDudesPos, staticSelectedDudesPos);
-	collisionCheck(staticDudesPos, staticDudesPos);
-	collisionCheck(staticDudesPos, staticSelectedDudesPos);
-	collisionCheck(staticSelectedDudesPos, staticSelectedDudesPos);
+	runCollisions();
 
 	//building check
 	checkEntityQueue();
@@ -398,6 +388,37 @@ void Entities::selectVector2(MainWindow& _wnd, std::vector<Vector2>& _entsFrom, 
 			it++;
 		}
 	}
+}
+
+void Entities::attackRangeCheck(std::vector<Vector6>& _atackeingEnt, std::vector<Vector6>& _entTakingDamage)
+{
+	auto doCirclesOverlap = [](float x1, float y1, float r1, float x2, float y2, float r2)
+	{
+		return std::fabs((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2)) <= (r1 + r2) * (r1 + r2);
+	};
+
+	
+
+}
+
+void Entities::runCollisions()
+{
+	//All the Collision Checks
+	//total entities to check : 4
+	//movingSelectedDudesPos
+	collisionCheck(movingSelectedDudesPos, movingSelectedDudesPos);
+	collisionCheck(movingSelectedDudesPos, movingDudesPos);
+	collisionCheck(movingSelectedDudesPos, staticDudesPos);
+	collisionCheck(movingSelectedDudesPos, staticSelectedDudesPos);
+	//movingDudesPos
+	collisionCheck(movingDudesPos, movingDudesPos);
+	collisionCheck(movingDudesPos, staticDudesPos);
+	collisionCheck(movingDudesPos, staticSelectedDudesPos);
+	//staticDudesPos
+	collisionCheck(staticDudesPos, staticDudesPos);
+	collisionCheck(staticDudesPos, staticSelectedDudesPos);
+	//staticSelectedDudesPos
+	collisionCheck(staticSelectedDudesPos, staticSelectedDudesPos);
 }
 
 void Entities::deselectEntities()
