@@ -137,6 +137,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="DXErr.cpp" />
+    <ClCompile Include="FrameTimer.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="Graphics.cpp" />
     <ClCompile Include="Keyboard.cpp" />
@@ -144,8 +145,9 @@
     <ClCompile Include="MainWindow.cpp" />
     <ClCompile Include="Mouse.cpp" />
     <ClCompile Include="RTS Files\Dude.cpp" />
-    <ClCompile Include="RTS Files\Entities.cpp" />
     <ClCompile Include="RTS Files\EntityInQueue.cpp" />
+    <ClCompile Include="RTS Files\EntityManagmentSystems.cpp" />
+    <ClCompile Include="RTS Files\EntStruct.cpp" />
     <ClCompile Include="RTS Files\HealthEntity.cpp" />
     <ClCompile Include="RTS Files\Hive.cpp" />
     <ClCompile Include="RTS Files\Poo.cpp" />
@@ -225,6 +227,7 @@
     <ClInclude Include="ChiliWin.h" />
     <ClInclude Include="Colors.h" />
     <ClInclude Include="DXErr.h" />
+    <ClInclude Include="FrameTimer.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="Graphics.h" />
     <ClInclude Include="Keyboard.h" />
@@ -232,8 +235,9 @@
     <ClInclude Include="Mouse.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="RTS Files\Dude.h" />
-    <ClInclude Include="RTS Files\Entities.h" />
     <ClInclude Include="RTS Files\EntityInQueue.h" />
+    <ClInclude Include="RTS Files\EntityManagmentSystems.h" />
+    <ClInclude Include="RTS Files\EntStruct.h" />
     <ClInclude Include="RTS Files\HealthEntity.h" />
     <ClInclude Include="RTS Files\Hive.h" />
     <ClInclude Include="RTS Files\Poo.h" />

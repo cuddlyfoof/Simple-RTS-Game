@@ -22,6 +22,7 @@
 #include "Game.h"
 #include <random>
 #include "Colors.h"
+#include <chrono>
 
 Game::Game( MainWindow& wnd )
 	:
@@ -49,7 +50,7 @@ void Game::ComposeFrame()
 
 	if (gameStart)
 	{
-		entities.render(gfx);
+		EMS.render(gfx, Entities);
 		
 		/*if (rightWasPressed)
 		{
@@ -68,6 +69,7 @@ void Game::ComposeFrame()
 
 void Game::UpdateModel()
 {	
+	const float dt = ft.mark();
 	if (wnd.kbd.KeyIsPressed( VK_RETURN ))
 	{
 		gameStart = true;
@@ -81,7 +83,7 @@ void Game::UpdateModel()
 				rightMouseX = wnd.mouse.GetPosX();
 				rightMouseY = wnd.mouse.GetPosY();				
 			}
-			entities.moveSelectedDudes(rightMouseX, rightMouseY);
+			EMS.moveSelectedDudes(Entities.staticSelectedDudesPos, Entities.movingSelectedDudesPos, rightMouseX, rightMouseY);
 			rightWasPressed = true;
 		}
 		else
@@ -89,7 +91,7 @@ void Game::UpdateModel()
 			rightWasPressed = false;
 		}
 		
-		entities.update();		
+		EMS.update(Entities, dt);
 
 		if (wnd.mouse.LeftIsPressed())
 		{			
@@ -104,15 +106,15 @@ void Game::UpdateModel()
 		{
 			if (leftWasPressed)
 			{
-				entities.deselectEntities();
-				entities.selectEntities(wnd, leftMouseX, leftMouseY);
+				EMS.deselectEntities(Entities);
+				EMS.selectEntities(wnd, Entities, leftMouseX, leftMouseY);
 			}
 			leftWasPressed = false;
 		}
 
 		if (wnd.kbd.KeyIsPressed('J'))
 		{
-			entities.deselectEntities();
+			EMS.deselectEntities(Entities);
 		}
 
 		if (wnd.kbd.KeyIsPressed('D'))
@@ -123,7 +125,7 @@ void Game::UpdateModel()
 		{
 			if (dWasPressed)
 			{
-				entities.addEntityToQueue(0, wnd.mouse.GetPosX(), wnd.mouse.GetPosY());
+				EMS.addEntityToQueue(Entities, 0, wnd.mouse.GetPosX(), wnd.mouse.GetPosY());
 			}
 			dWasPressed = false;
 		}
@@ -136,7 +138,7 @@ void Game::UpdateModel()
 		{
 			if (hWasPressed)
 			{
-				entities.addEntityToQueue(1, wnd.mouse.GetPosX(), wnd.mouse.GetPosY());
+				EMS.addEntityToQueue(Entities, 1, wnd.mouse.GetPosX(), wnd.mouse.GetPosY());
 			}
 			hWasPressed = false;
 		}

@@ -24,7 +24,10 @@
 #include "Mouse.h"
 #include "Graphics.h"
 #include <vector>
-#include "RTS Files/Entities.h"
+#include "RTS Files/EntityManagmentSystems.h"
+#include "RTS Files/EntStruct.h"
+//#include "RTS Files/Entities.h"
+#include "FrameTimer.h"
 
 class Game
 {
@@ -48,7 +51,10 @@ private:
 private:
 	MainWindow& wnd;
 	Graphics gfx;
-    Entities entities;
+    EntStruct Entities;
+    EntityManagmentSystems EMS{ Entities };
+    FrameTimer ft;
+    //Entities entityData;
 	/********************************/
 	/*  User Variables              */
     bool gameStart = false;
