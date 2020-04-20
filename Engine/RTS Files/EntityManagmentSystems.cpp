@@ -3,15 +3,20 @@
 #include <cmath>
 #include "../Game.h"
 
+#define DUDE 0
+#define POO 2
+#define DUDEHIVE 1
+#define POOHIVE 3
+
 EntityManagmentSystems::EntityManagmentSystems()
 {
 }
 
 EntityManagmentSystems::EntityManagmentSystems(EntStruct& _ents)
 {
-	addVector2Entity(_ents, _ents.dudeHivesPos, 1, 100, 450);
-	addVector2Entity(_ents, _ents.pooHivesPos, 3, 1340, 450);
-	addVector6Entity(_ents, _ents.poosPos, 2, 1200, 450);
+	addEntity(_ents, DUDEHIVE, 100, 450);
+	addEntity(_ents, POOHIVE, 1340, 450);
+	addEntity(_ents, POO, 1200, 450);
 }
 
 void EntityManagmentSystems::moveSelectedDudes(std::vector<Vector6>& _static, std::vector<Vector6>& _moving, int _x, int _y)
@@ -38,7 +43,7 @@ void EntityManagmentSystems::addEntityToQueue(EntStruct& _ents, int _entNum, int
 		{
 			if (_ents.selectedDudeHivesPos.size() > 0)
 			{
-				addVector6Entity(_ents, _ents.staticDudesPos, _entNum, _ents.selectedDudeHivesPos.back().x, _ents.selectedDudeHivesPos.back().y);
+				addEntity(_ents, _entNum, _ents.selectedDudeHivesPos.back().x, _ents.selectedDudeHivesPos.back().y);
 				resources -= 50;
 			}
 		}
@@ -135,65 +140,137 @@ void EntityManagmentSystems::checkEntityQueue(EntStruct& _ents)
 	}
 }
 
-void EntityManagmentSystems::addVector6Entity(EntStruct& _entStruct, std::vector<Vector6>& _ents, int _entNum, int _x, int _y)
-{
-	bool canAdd = true;
-	for (auto dude : _ents)
+void EntityManagmentSystems::addEntity(EntStruct& _entStruct, int _entNum, int _x, int _y)
+{	
+	switch (_entNum)
 	{
-		if ((_x + Dude::diameter) >= dude.x 
-			&& (_x - Dude::diameter) <= dude.x 
-			&& (_y + Dude::diameter) >= dude.y 
-			&& (_y - Dude::diameter) <= dude.y)
-		{
-			canAdd = false;
-		}
+	//Units
+	case DUDE :
+		_entStruct.staticDudesPos.emplace_back(_x, _y, uuid);
+		_entStruct.dudes.emplace_back(uuid);
+		break;
+	case POO :
+		_entStruct.poosPos.emplace_back(_x, _y, uuid);
+		_entStruct.poos.emplace_back(uuid);
+		break;
+	//Buildings
+	case DUDEHIVE:
+		_entStruct.dudeHivesPos.emplace_back(_x, _y, uuid);
+		_entStruct.dudeHives.emplace_back(uuid);
+		break;
+	case POOHIVE:
+		_entStruct.pooHivesPos.emplace_back(_x, _y, uuid);
+		_entStruct.pooHives.emplace_back(uuid);
+		break;
+	default:
+		break;
 	}
-	if (canAdd)
-	{
-		_ents.emplace_back(_x, _y, uuid);
-		switch (_entNum)
-		{
-		case 0:
-			_entStruct.dudes.emplace_back(uuid);
-			break;
-		case 2 :
-			_entStruct.poos.emplace_back(uuid);
-			break;
-		default:
-			break;
-		}
-		uuid++;
-	}
+	uuid++;
 }
 
-void EntityManagmentSystems::addVector2Entity(EntStruct& _entStruct, std::vector<Vector2>& _ents, int _entNum, int _x, int _y)
+void EntityManagmentSystems::removeEntity(EntStruct& _entStruct, const int _entNum, const int _uuid)
 {
-	bool canAdd = true;
-	for (auto dude : _ents)
+	auto checkVector6Uuid = [&_uuid](std::vector<Vector6>& _ents) 
 	{
-		if ((_x + Dude::diameter) >= dude.x
-			&& (_x - Dude::diameter) <= dude.x
-			&& (_y + Dude::diameter) >= dude.y
-			&& (_y - Dude::diameter) <= dude.y)
+		for (auto it{ _ents.begin() }; it != _ents.end();) 
 		{
-			canAdd = false;
+			if (it->id == _uuid)
+			{
+				it = _ents.erase(it);
+				break;
+			}
+			else
+			{
+				it++;
+			}
 		}
-	}
-	if (canAdd)
+	};
+
+	auto checkVector2Uuid = [&_uuid](std::vector<Vector2>& _ents)
 	{
-		_ents.emplace_back(_x, _y, uuid);
-		switch (_entNum)
+		for (auto it{ _ents.begin() }; it != _ents.end();)
 		{
-		case 1:
-			_entStruct.dudeHives.emplace_back(uuid);
-			break;
-		case 3 :
-			_entStruct.pooHives.emplace_back(uuid);
-			break;
-		default:
-			break;
+			if (it->id == _uuid)
+			{
+				it = _ents.erase(it);
+				break;
+			}
+			else
+			{
+				it++;
+			}
 		}
-		uuid++;
+	};
+
+	switch (_entNum)
+	{
+	//Units ***************************************************
+	case DUDE :
+		checkVector6Uuid(_entStruct.staticSelectedDudesPos);
+		checkVector6Uuid(_entStruct.movingSelectedDudesPos);
+		checkVector6Uuid(_entStruct.staticDudesPos);
+		checkVector6Uuid(_entStruct.movingDudesPos);
+		for (auto it{ _entStruct.dudes.begin() }; it != _entStruct.dudes.end();)
+		{
+			if (it->posID == _uuid)
+			{
+				it = _entStruct.dudes.erase(it);
+				break;
+			}
+			else
+			{
+				it++;
+			}
+		}
+		break;
+	case POO:
+		checkVector6Uuid(_entStruct.poosPos);
+		for (auto it{ _entStruct.poos.begin() }; it != _entStruct.poos.end();)
+		{
+			if (it->posID == _uuid)
+			{
+				it = _entStruct.poos.erase(it);
+				break;
+			}
+			else
+			{
+				it++;
+			}
+		}
+		break;
+	//Buildings *******************************************
+	case DUDEHIVE:
+		checkVector2Uuid(_entStruct.dudeHivesPos);
+		for (auto it{ _entStruct.dudeHives.begin() }; it != _entStruct.dudeHives.end();)
+		{
+			if (it->posID == _uuid)
+			{
+				it = _entStruct.dudeHives.erase(it);
+				break;
+			}
+			else
+			{
+				it++;
+			}
+		}
+		break;
+	case POOHIVE:
+		checkVector2Uuid(_entStruct.pooHivesPos);
+		for (auto it{ _entStruct.pooHives.begin() }; it != _entStruct.pooHives.end();)
+		{
+			if (it->posID == _uuid)
+			{
+				it = _entStruct.pooHives.erase(it);
+				break;
+			}
+			else
+			{
+				it++;
+			}
+		}
+		break;
+	default:
+		break;
 	}
 }
 
@@ -315,8 +392,11 @@ void EntityManagmentSystems::update(EntStruct& _ents, const float _dt)
 	//move Dudes
 	updatePositions(_ents.movingDudesPos, _ents.staticDudesPos, _dt);
 	updatePositions(_ents.movingSelectedDudesPos, _ents.staticSelectedDudesPos, _dt);
-
 	runCollisions(_ents, _dt);
+
+	//Metrics
+
+	trackHealth(_ents, _dt);
 
 	//building check
 	checkEntityQueue(_ents);
@@ -385,6 +465,23 @@ void EntityManagmentSystems::selectVector2(MainWindow& _wnd, std::vector<Vector2
 		}
 		else
 		{
+			it++;
+		}
+	}
+}
+
+void EntityManagmentSystems::trackHealth(EntStruct& _ents, const float _dt)
+{
+	for (auto it{ _ents.healthTracker.begin() }; it != _ents.healthTracker.end();)
+	{
+		if (it->health <= 0.0f)
+		{
+			removeEntity(_ents, it->entNum, it->uuid);
+			it = _ents.healthTracker.erase(it);
+		}
+		else
+		{
+			it->health -= it->damageTaking * _dt;
 			it++;
 		}
 	}

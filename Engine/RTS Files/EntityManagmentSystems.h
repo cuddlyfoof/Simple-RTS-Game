@@ -32,20 +32,24 @@ public:
 
 	//Assistive Systems
 	//Functions************************************************************	
-	void addVector6Entity(EntStruct& ,std::vector<Vector6>&, int, int, int);
-	void addVector2Entity(EntStruct& ,std::vector<Vector2>&, int, int, int);
+	void addEntity(EntStruct& , int, int, int);
+	void removeEntity(EntStruct&, const int, const int);
 	void selectVector6(MainWindow&, std::vector<Vector6>&, std::vector<Vector6>&, const int, const int);
 	void selectVector2(MainWindow&, std::vector<Vector2>&, std::vector<Vector2>&, const int, const int);
-	void attackRangeCheck(std::vector<Vector6>&, std::vector<Vector6>&);
 	//*************** Position Stuffs:	
 	void runCollisions(EntStruct&, const float);
 	void collisionCheck(std::vector<Vector6>&, std::vector<Vector6>&, const float);
 	void updatePositions(std::vector<Vector6>&, std::vector<Vector6>&, const float);
+	
+private:	
+	void trackHealth(EntStruct&, const float);
+	void attackRangeCheck(std::vector<Vector6>&, std::vector<Vector6>&);
+	void checkEntityQueue(EntStruct&);
+
+	//Position Stuffs
 	void applySpeedLimit(Vector6&, const float);
 	void applyFriction(Vector6&, const float);
-	
-private:
-	void checkEntityQueue(EntStruct&);
+
 	//*************** Render stuffs:
 	void renderResources(Graphics&);
 	void renderSelectedDude(Graphics&, int, int, int);

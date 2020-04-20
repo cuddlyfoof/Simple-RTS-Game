@@ -24,6 +24,11 @@
 #include "Colors.h"
 #include <chrono>
 
+#define DUDE 0
+#define POO 2
+#define DUDEHIVE 1
+#define POOHIVE 3
+
 Game::Game( MainWindow& wnd )
 	:
 	wnd( wnd ),
@@ -125,7 +130,7 @@ void Game::UpdateModel()
 		{
 			if (dWasPressed)
 			{
-				EMS.addEntityToQueue(Entities, 0, wnd.mouse.GetPosX(), wnd.mouse.GetPosY());
+				EMS.addEntityToQueue(Entities, DUDE, wnd.mouse.GetPosX(), wnd.mouse.GetPosY());
 			}
 			dWasPressed = false;
 		}
@@ -138,7 +143,7 @@ void Game::UpdateModel()
 		{
 			if (hWasPressed)
 			{
-				EMS.addEntityToQueue(Entities, 1, wnd.mouse.GetPosX(), wnd.mouse.GetPosY());
+				EMS.addEntityToQueue(Entities, DUDEHIVE, wnd.mouse.GetPosX(), wnd.mouse.GetPosY());
 			}
 			hWasPressed = false;
 		}

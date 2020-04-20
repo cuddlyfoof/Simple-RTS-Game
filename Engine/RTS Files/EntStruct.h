@@ -28,10 +28,10 @@ struct EntStruct
 	std::vector<HealthEntity> healthTracker;
 	std::vector<EntityInQueue> queuedEntities;
 
-	//Units
+	//Units Values
 	std::vector<Dude> dudes;
 	std::vector<Poo> poos;
-	//Buildings
+	//Buildings Values
 	std::vector<Hive> dudeHives;
 	std::vector<Hive> pooHives;
 };
