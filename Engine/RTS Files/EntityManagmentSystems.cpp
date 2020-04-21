@@ -93,7 +93,7 @@ void EntityManagmentSystems::addEntityToQueue(EntStruct& _ents, int _entNum, int
 //	}
 //}
 
-void EntityManagmentSystems::checkEntityQueue(EntStruct& _ents)
+void EntityManagmentSystems::checkBuildingQueue(EntStruct& _ents)
 {
 	auto doCirclesOverlap = [](float x1, float y1, float r1, float x2, float y2, float r2)
 	{
@@ -123,15 +123,9 @@ void EntityManagmentSystems::checkEntityQueue(EntStruct& _ents)
 		}
 		if (builderHasArrived)
 		{
-			switch (it->entNum)
-			{
-			case 1:
-				_ents.dudeHivesPos.emplace_back(it->x, it->y, it->uuid);
-				_ents.dudeHives.emplace_back(it->uuid);
-				it = _ents.queuedEntities.erase(it);
-			default:
-				break;
-			}
+			addEntity(_ents, it->entNum, it->x, it->y);
+			it = _ents.queuedEntities.erase(it);
+			builderHasArrived = false;
 		}
 		else
 		{
@@ -148,47 +142,34 @@ void EntityManagmentSystems::addEntity(EntStruct& _entStruct, int _entNum, int _
 	case DUDE :
 		_entStruct.staticDudesPos.emplace_back(_x, _y, uuid);
 		_entStruct.dudes.emplace_back(uuid);
+		uuid++;
 		break;
 	case POO :
 		_entStruct.poosPos.emplace_back(_x, _y, uuid);
 		_entStruct.poos.emplace_back(uuid);
+		uuid++;
 		break;
 	//Buildings
 	case DUDEHIVE:
 		_entStruct.dudeHivesPos.emplace_back(_x, _y, uuid);
 		_entStruct.dudeHives.emplace_back(uuid);
+		uuid++;
 		break;
 	case POOHIVE:
 		_entStruct.pooHivesPos.emplace_back(_x, _y, uuid);
 		_entStruct.pooHives.emplace_back(uuid);
+		uuid++;
 		break;
 	default:
 		break;
 	}
-	uuid++;
 }
 
 void EntityManagmentSystems::removeEntity(EntStruct& _entStruct, const int _entNum, const int _uuid)
 {
-	auto checkVector6Uuid = [&_uuid](std::vector<Vector6>& _ents) 
+	auto checkVectorUuid = [&_uuid](auto& _ents) 
 	{
 		for (auto it{ _ents.begin() }; it != _ents.end();) 
-		{
-			if (it->id == _uuid)
-			{
-				it = _ents.erase(it);
-				break;
-			}
-			else
-			{
-				it++;
-			}
-		}
-	};
-
-	auto checkVector2Uuid = [&_uuid](std::vector<Vector2>& _ents)
-	{
-		for (auto it{ _ents.begin() }; it != _ents.end();)
 		{
 			if (it->id == _uuid)
 			{
@@ -206,10 +187,10 @@ void EntityManagmentSystems::removeEntity(EntStruct& _entStruct, const int _entN
 	{
 	//Units ***************************************************
 	case DUDE :
-		checkVector6Uuid(_entStruct.staticSelectedDudesPos);
-		checkVector6Uuid(_entStruct.movingSelectedDudesPos);
-		checkVector6Uuid(_entStruct.staticDudesPos);
-		checkVector6Uuid(_entStruct.movingDudesPos);
+		checkVectorUuid(_entStruct.staticSelectedDudesPos);
+		checkVectorUuid(_entStruct.movingSelectedDudesPos);
+		checkVectorUuid(_entStruct.staticDudesPos);
+		checkVectorUuid(_entStruct.movingDudesPos);
 		for (auto it{ _entStruct.dudes.begin() }; it != _entStruct.dudes.end();)
 		{
 			if (it->posID == _uuid)
@@ -224,7 +205,7 @@ void EntityManagmentSystems::removeEntity(EntStruct& _entStruct, const int _entN
 		}
 		break;
 	case POO:
-		checkVector6Uuid(_entStruct.poosPos);
+		checkVectorUuid(_entStruct.poosPos);
 		for (auto it{ _entStruct.poos.begin() }; it != _entStruct.poos.end();)
 		{
 			if (it->posID == _uuid)
@@ -240,7 +221,7 @@ void EntityManagmentSystems::removeEntity(EntStruct& _entStruct, const int _entN
 		break;
 	//Buildings *******************************************
 	case DUDEHIVE:
-		checkVector2Uuid(_entStruct.dudeHivesPos);
+		checkVectorUuid(_entStruct.dudeHivesPos);
 		for (auto it{ _entStruct.dudeHives.begin() }; it != _entStruct.dudeHives.end();)
 		{
 			if (it->posID == _uuid)
@@ -255,7 +236,7 @@ void EntityManagmentSystems::removeEntity(EntStruct& _entStruct, const int _entN
 		}
 		break;
 	case POOHIVE:
-		checkVector2Uuid(_entStruct.pooHivesPos);
+		checkVectorUuid(_entStruct.pooHivesPos);
 		for (auto it{ _entStruct.pooHives.begin() }; it != _entStruct.pooHives.end();)
 		{
 			if (it->posID == _uuid)
@@ -396,10 +377,10 @@ void EntityManagmentSystems::update(EntStruct& _ents, const float _dt)
 
 	//Metrics
 
-	trackHealth(_ents, _dt);
+	//trackHealth(_ents, _dt);
 
 	//building check
-	checkEntityQueue(_ents);
+	checkBuildingQueue(_ents);
 }
 
 void EntityManagmentSystems::selectEntities(MainWindow& _wnd, EntStruct& _ents, int _x, int _y)
@@ -489,10 +470,10 @@ void EntityManagmentSystems::trackHealth(EntStruct& _ents, const float _dt)
 
 void EntityManagmentSystems::attackRangeCheck(std::vector<Vector6>& _atackeingEnt, std::vector<Vector6>& _entTakingDamage)
 {
-	auto doCirclesOverlap = [](float x1, float y1, float r1, float x2, float y2, float r2)
+	/*auto doCirclesOverlap = [](float x1, float y1, float r1, float x2, float y2, float r2)
 	{
 		return std::fabs((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2)) <= (r1 + r2) * (r1 + r2);
-	};
+	};*/
 
 	
 

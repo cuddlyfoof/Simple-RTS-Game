@@ -2,7 +2,7 @@
 
 struct HealthEntity
 {
-	HealthEntity(int, float);
+	HealthEntity(int, int, float, float);
 	int uuid = 0;
 	int entNum = 0;
 	float health = 0.0f;

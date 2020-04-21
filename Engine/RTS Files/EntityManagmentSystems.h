@@ -44,7 +44,7 @@ public:
 private:	
 	void trackHealth(EntStruct&, const float);
 	void attackRangeCheck(std::vector<Vector6>&, std::vector<Vector6>&);
-	void checkEntityQueue(EntStruct&);
+	void checkBuildingQueue(EntStruct&);
 
 	//Position Stuffs
 	void applySpeedLimit(Vector6&, const float);
