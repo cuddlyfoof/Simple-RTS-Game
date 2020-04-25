@@ -19,12 +19,10 @@ public:
 	//Main Systems
 	EntityManagmentSystems();
 	EntityManagmentSystems(EntStruct&);
-	void moveSelectedDudes(std::vector<Vector6>&, std::vector<Vector6>&, int, int);
-	void addEntityToQueue(EntStruct&, int,int,int);
+	//Main Update function *************
 	void update(EntStruct&, const float);
-	void selectEntities(MainWindow&, EntStruct&, int, int);
-	void deselectEntities(EntStruct&);
-	//*************** Render stuffs
+	
+	//*************** Main Render Function
 	void render(Graphics&, EntStruct&);
 	//*************** Depricated / not yet implemented
 	//void stopDudes(std::vector<Vector4>&, std::vector<Vector4>&, float);
@@ -32,6 +30,10 @@ public:
 
 	//Assistive Systems
 	//Functions************************************************************	
+	void moveSelectedDudes(std::vector<Vector6>&, std::vector<Vector6>&, int, int);
+	void addEntityToQueue(EntStruct&, int, int, int);
+	void selectEntities(MainWindow&, EntStruct&, int, int);
+	void deselectEntities(EntStruct&);
 	void addEntity(EntStruct& , int, int, int);
 	void removeEntity(EntStruct&, const int, const int);
 	void selectVector6(MainWindow&, std::vector<Vector6>&, std::vector<Vector6>&, const int, const int);

@@ -19,6 +19,59 @@ EntityManagmentSystems::EntityManagmentSystems(EntStruct& _ents)
 	addEntity(_ents, POO, 1200, 450);
 }
 
+void EntityManagmentSystems::update(EntStruct& _ents, const float _dt)
+{
+	//move Dudes
+	updatePositions(_ents.movingDudesPos, _ents.staticDudesPos, _dt);
+	updatePositions(_ents.movingSelectedDudesPos, _ents.staticSelectedDudesPos, _dt);
+	runCollisions(_ents, _dt);
+
+	//Metrics
+
+	//trackHealth(_ents, _dt);
+
+	//building check
+	checkBuildingQueue(_ents);
+}
+
+void EntityManagmentSystems::render(Graphics& _gfx, EntStruct& _ents)
+{
+	for (auto dude : _ents.staticDudesPos)
+	{
+		renderDude(_gfx, (int)dude.x, (int)dude.y, 1);
+	}
+	for (auto dude : _ents.movingDudesPos)
+	{
+		renderDude(_gfx, (int)dude.x, (int)dude.y, 1);
+	}
+	for (auto dude : _ents.staticSelectedDudesPos)
+	{
+		renderSelectedDude(_gfx, (int)dude.x, (int)dude.y, 1);
+	}
+	for (auto dude : _ents.movingSelectedDudesPos)
+	{
+		renderSelectedDude(_gfx, (int)dude.x, (int)dude.y, 1);
+	}
+	for (auto hive : _ents.dudeHivesPos)
+	{
+		renderDude(_gfx, (int)hive.x, (int)hive.y, 3);
+	}
+	for (auto hive : _ents.selectedDudeHivesPos)
+	{
+		renderSelectedDude(_gfx, (int)hive.x, (int)hive.y, 3);
+	}
+	for (auto poo : _ents.poosPos)
+	{
+		renderPoo(_gfx, (int)poo.x, (int)poo.y, 1);
+	}
+	for (auto hive : _ents.pooHivesPos)
+	{
+		renderPoo(_gfx, (int)hive.x, (int)hive.y, 3);
+	}
+
+	renderResources(_gfx);
+}
+
 void EntityManagmentSystems::moveSelectedDudes(std::vector<Vector6>& _static, std::vector<Vector6>& _moving, int _x, int _y)
 {
 	for (auto dude : _static)
@@ -39,13 +92,10 @@ void EntityManagmentSystems::addEntityToQueue(EntStruct& _ents, int _entNum, int
 	{
 	//Add Dude : 0
 	case 0 :
-		if (resources >= 50)
+		if (resources >= 50 && _ents.selectedDudeHivesPos.size() > 0)
 		{
-			if (_ents.selectedDudeHivesPos.size() > 0)
-			{
 				addEntity(_ents, _entNum, _ents.selectedDudeHivesPos.back().x, _ents.selectedDudeHivesPos.back().y);
-				resources -= 50;
-			}
+				//resources -= 50;
 		}
 		break;
 	//Add Hive : 1
@@ -136,13 +186,68 @@ void EntityManagmentSystems::checkBuildingQueue(EntStruct& _ents)
 
 void EntityManagmentSystems::addEntity(EntStruct& _entStruct, int _entNum, int _x, int _y)
 {	
+	auto doCirclesOverlap = [](float x1, float y1, float x2, float y2, float r)
+	{
+		return (x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2) <= (r * 2) * (r * 2);
+	};
+
+	auto moveUnitCheck = [&doCirclesOverlap, &_x, &_y](std::vector<Vector6> _ents, float r1, float d2)
+	{
+		float _X = _x, _Y = _y;
+		float m = 0.0f;
+		for (auto it{_ents.begin()}; it != _ents.end();)
+		{			
+			while (doCirclesOverlap(it->x, it->y, _x, _y, r1))
+			{
+				if (m <= 3.0f)
+				{
+					if ((_x >= _X - (r1 * m) && _y <= _Y - (r1 * m))
+						&& (_x <= _X + d2 + (r1 * m) && _y <= _Y - (r1 * m)))
+					{
+						_x += r1;
+					}
+					else if ((_x >= _X + d2 + (r1 * m) && _y >= _Y - (r1 * m))
+						&& (_x >= _X + d2 + (r1 * m) && _y <= _Y + d2 + (r1 * m)))
+					{
+						_y += r1;
+					}
+					else if ((_x <= _X + d2 + (r1 * m) && _y >= _Y + d2 + (r1 * m))
+						&& (_x >= _X - (r1 * m) && _y >= _Y + d2 + (r1 * m)))
+					{
+						_x -= r1;
+					}
+					else if ((_x <= _X - (r1 * m) && _y <= _Y + d2 + (r1 * m))
+						&& (_x <= _X - (r1 * m) && _y >= _Y - (r1 * m)))
+					{
+						_y -= r1;
+					}
+					else
+					{
+						m += 1.0f;
+					}
+				}
+				else return false;
+				it = _ents.begin();
+			}
+			it++;
+		}
+		return true;
+	};
+
+	
 	switch (_entNum)
 	{
 	//Units
 	case DUDE :
-		_entStruct.staticDudesPos.emplace_back(_x, _y, uuid);
-		_entStruct.dudes.emplace_back(uuid);
-		uuid++;
+		_x -= Dude::diameter;
+		_y -= Dude::diameter;
+		if (moveUnitCheck(_entStruct.staticDudesPos, Dude::radius, Hive::diameter) &&
+			moveUnitCheck(_entStruct.staticSelectedDudesPos, Dude::diameter, Hive::diameter))
+		{
+			_entStruct.staticDudesPos.emplace_back(_x, _y, uuid);
+			_entStruct.dudes.emplace_back(uuid);
+			uuid++;
+		}
 		break;
 	case POO :
 		_entStruct.poosPos.emplace_back(_x, _y, uuid);
@@ -368,21 +473,6 @@ void EntityManagmentSystems::collisionCheck(std::vector<Vector6>& ents1, std::ve
 //		&& (y1 + d) <= y2 + w1);
 //}
 
-void EntityManagmentSystems::update(EntStruct& _ents, const float _dt)
-{	
-	//move Dudes
-	updatePositions(_ents.movingDudesPos, _ents.staticDudesPos, _dt);
-	updatePositions(_ents.movingSelectedDudesPos, _ents.staticSelectedDudesPos, _dt);
-	runCollisions(_ents, _dt);
-
-	//Metrics
-
-	//trackHealth(_ents, _dt);
-
-	//building check
-	checkBuildingQueue(_ents);
-}
-
 void EntityManagmentSystems::selectEntities(MainWindow& _wnd, EntStruct& _ents, int _x, int _y)
 {	
 	selectVector6(_wnd, _ents.staticDudesPos, _ents.staticSelectedDudesPos, _x, _y);
@@ -542,44 +632,6 @@ void EntityManagmentSystems::applyFriction(Vector6& _ent, const float friction)
 {
 	_ent.vX += (_ent.vX * friction) * -1.0f;
 	_ent.vY += (_ent.vY * friction) * -1.0f;
-}
-
-void EntityManagmentSystems::render(Graphics& _gfx, EntStruct& _ents)
-{
-	for (auto dude : _ents.staticDudesPos)
-	{
-		renderDude(_gfx, (int)dude.x, (int)dude.y, 1);
-	}
-	for (auto dude : _ents.movingDudesPos)
-	{
-		renderDude(_gfx, (int)dude.x, (int)dude.y, 1);
-	}
-	for (auto dude : _ents.staticSelectedDudesPos)
-	{
-		renderSelectedDude(_gfx, (int)dude.x, (int)dude.y, 1);
-	}
-	for (auto dude : _ents.movingSelectedDudesPos)
-	{
-		renderSelectedDude(_gfx, (int)dude.x, (int)dude.y, 1);
-	}
-	for (auto hive : _ents.dudeHivesPos)
-	{
-		renderDude(_gfx, (int)hive.x, (int)hive.y, 3);
-	}
-	for (auto hive : _ents.selectedDudeHivesPos)
-	{
-		renderSelectedDude(_gfx, (int)hive.x, (int)hive.y, 3);
-	}
-	for (auto poo : _ents.poosPos)
-	{
-		renderPoo(_gfx, (int)poo.x, (int)poo.y, 1);
-	}
-	for (auto hive : _ents.pooHivesPos)
-	{
-		renderPoo(_gfx, (int)hive.x, (int)hive.y, 3);
-	}
-
-	renderResources(_gfx);
 }
 
 void EntityManagmentSystems::renderResources(Graphics& _gfx)
