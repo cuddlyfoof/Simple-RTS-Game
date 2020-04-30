@@ -186,41 +186,46 @@ void EntityManagmentSystems::checkBuildingQueue(EntStruct& _ents)
 
 void EntityManagmentSystems::addEntity(EntStruct& _entStruct, int _entNum, int _x, int _y)
 {	
+	float _X = _x, _Y = _y;
+
 	auto doCirclesOverlap = [](float x1, float y1, float x2, float y2, float r)
 	{
-		return (x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2) <= (r * 2) * (r * 2);
+		return (x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2) <= (r * 2.0f) * (r * 2.0f);
 	};
 
-	auto moveUnitCheck = [&doCirclesOverlap, &_x, &_y](std::vector<Vector6> _ents, float r1, float d2)
+	auto moveUnitCheck = [&doCirclesOverlap, &_x, &_y, &_X, &_Y](std::vector<Vector6> _ents, float r1, float d2)
 	{
-		float _X = _x, _Y = _y;
-		float m = 0.0f;
+		//d2 -= 0.5f;
+		_x = _X - (r1 * 2.0f);
+		_y = _Y - (r1 * 2.0f);
+		float m = 1.0f;
 		for (auto it{_ents.begin()}; it != _ents.end();)
 		{			
 			while (doCirclesOverlap(it->x, it->y, _x, _y, r1))
 			{
 				if (m <= 3.0f)
 				{
+					//In top quadrant
 					if ((_x >= _X - (r1 * m) && _y <= _Y - (r1 * m))
 						&& (_x <= _X + d2 + (r1 * m) && _y <= _Y - (r1 * m)))
 					{
-						_x += r1;
-					}
+						_x += r1 * 2.0f;
+					}// Right
 					else if ((_x >= _X + d2 + (r1 * m) && _y >= _Y - (r1 * m))
 						&& (_x >= _X + d2 + (r1 * m) && _y <= _Y + d2 + (r1 * m)))
 					{
-						_y += r1;
-					}
+						_y += r1 * 2.0f;
+					}// Bottom
 					else if ((_x <= _X + d2 + (r1 * m) && _y >= _Y + d2 + (r1 * m))
 						&& (_x >= _X - (r1 * m) && _y >= _Y + d2 + (r1 * m)))
 					{
-						_x -= r1;
-					}
+						_x -= r1 * 2.0f;
+					}// Left
 					else if ((_x <= _X - (r1 * m) && _y <= _Y + d2 + (r1 * m))
 						&& (_x <= _X - (r1 * m) && _y >= _Y - (r1 * m)))
 					{
-						_y -= r1;
-					}
+						_y -= r1 * 2.0f;
+					}// done circle move out one
 					else
 					{
 						m += 1.0f;
@@ -239,10 +244,10 @@ void EntityManagmentSystems::addEntity(EntStruct& _entStruct, int _entNum, int _
 	{
 	//Units
 	case DUDE :
-		_x -= Dude::diameter;
-		_y -= Dude::diameter;
+		/*_x -= Dude::diameter + 0.6f;
+		_y -= Dude::diameter + 0.6f;*/
 		if (moveUnitCheck(_entStruct.staticDudesPos, Dude::radius, Hive::diameter) &&
-			moveUnitCheck(_entStruct.staticSelectedDudesPos, Dude::diameter, Hive::diameter))
+			moveUnitCheck(_entStruct.staticSelectedDudesPos, Dude::radius, Hive::diameter))
 		{
 			_entStruct.staticDudesPos.emplace_back(_x, _y, uuid);
 			_entStruct.dudes.emplace_back(uuid);

@@ -75,6 +75,9 @@
     <ClCompile Include="RTS Files\EntStruct.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="RTS Files\FlowFieldManagmentSystems.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="FramebufferPS.hlsl">
@@ -153,6 +156,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="RTS Files\EntStruct.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="RTS Files\FlowFieldManagmentSystems.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -148,6 +148,7 @@
     <ClCompile Include="RTS Files\EntityInQueue.cpp" />
     <ClCompile Include="RTS Files\EntityManagmentSystems.cpp" />
     <ClCompile Include="RTS Files\EntStruct.cpp" />
+    <ClCompile Include="RTS Files\FlowFieldManagmentSystems.cpp" />
     <ClCompile Include="RTS Files\HealthEntity.cpp" />
     <ClCompile Include="RTS Files\Hive.cpp" />
     <ClCompile Include="RTS Files\Poo.cpp" />
@@ -238,6 +239,7 @@
     <ClInclude Include="RTS Files\EntityInQueue.h" />
     <ClInclude Include="RTS Files\EntityManagmentSystems.h" />
     <ClInclude Include="RTS Files\EntStruct.h" />
+    <ClInclude Include="RTS Files\FlowFieldManagmentSystems.h" />
     <ClInclude Include="RTS Files\HealthEntity.h" />
     <ClInclude Include="RTS Files\Hive.h" />
     <ClInclude Include="RTS Files\Poo.h" />

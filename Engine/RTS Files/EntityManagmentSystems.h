@@ -64,6 +64,8 @@ private:
 	int uuid = 1;
 	static constexpr float minSpeed = 1.2;
 	int resources = 1000;
+
+	
 	
 
 	//****************** Not Used yet
