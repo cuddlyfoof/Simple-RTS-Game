@@ -15,8 +15,8 @@ EntityManagmentSystems::EntityManagmentSystems()
 EntityManagmentSystems::EntityManagmentSystems(EntStruct& _ents)
 {
 	addEntity(_ents, DUDEHIVE, 100, 450);
-	addEntity(_ents, POOHIVE, 1340, 450);
-	addEntity(_ents, POO, 1200, 450);
+	//addEntity(_ents, POOHIVE, 1240, 450);
+	//addEntity(_ents, POO, 1200, 450);
 }
 
 void EntityManagmentSystems::update(EntStruct& _ents, const float _dt)

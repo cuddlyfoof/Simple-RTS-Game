@@ -28,6 +28,8 @@
 #include "RTS Files/EntStruct.h"
 //#include "RTS Files/Entities.h"
 #include "FrameTimer.h"
+#include "RTS Files/FlowFieldManagmentSystems.h"
+#include <cstddef>
 
 class Game
 {
@@ -53,6 +55,7 @@ private:
 	Graphics gfx;
     EntStruct Entities;
     EntityManagmentSystems EMS{ Entities };
+    FlowFieldManagmentSystems FMS;
     FrameTimer ft;
     //Entities entityData;
 	/********************************/
@@ -66,5 +69,6 @@ private:
     int rightMouseY = 100;
     int leftMouseX = 100;
     int leftMouseY = 100;
+    std::uint8_t costCounter = 2;
 	/********************************/
 };

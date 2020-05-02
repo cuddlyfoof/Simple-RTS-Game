@@ -49,12 +49,13 @@ void Game::ComposeFrame()
 	// background colour
 	for (auto _y = 0; _y < gfx.ScreenHeight - 1; _y++) {
 		for (auto _x = 0; _x < gfx.ScreenWidth - 1; _x++) {
-			gfx.PutPixel(_x, _y, 148, 65, 133);
+			gfx.PutPixel(_x, _y, 17, 61, 22);
 		}
 	}
 
 	if (gameStart)
-	{
+	{		
+		FMS.render(gfx);
 		EMS.render(gfx, Entities);
 		
 		/*if (rightWasPressed)
@@ -146,6 +147,35 @@ void Game::UpdateModel()
 				EMS.addEntityToQueue(Entities, DUDEHIVE, wnd.mouse.GetPosX(), wnd.mouse.GetPosY());
 			}
 			hWasPressed = false;
+		}
+
+		
+		if (wnd.kbd.KeyIsPressed(VK_SHIFT))
+		{
+			if (wnd.mouse.LeftIsPressed())
+			{
+				FMS.adjustCostMap(wnd.mouse.GetPosX(), wnd.mouse.GetPosY(), costCounter);
+			}
+			else
+			{
+				costCounter = 2;
+			}
+			if (costCounter < 254)
+			{
+				costCounter++;
+			}
+		}
+
+		if (wnd.kbd.KeyIsPressed( VK_CONTROL ))
+		{
+			if (wnd.mouse.LeftIsPressed())
+			{
+				FMS.adjustCostMap(wnd.mouse.GetPosX(), wnd.mouse.GetPosY(), 255);
+			}
+			else if (wnd.mouse.RightIsPressed())
+			{
+				FMS.adjustCostMap(wnd.mouse.GetPosX(), wnd.mouse.GetPosY(), 1);
+			}
 		}
 	}	
 }
