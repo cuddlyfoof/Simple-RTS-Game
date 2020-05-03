@@ -2,18 +2,38 @@
 #include "Dude.h"
 #include <cmath>
 #include <list>
+#include <algorithm>
 
-std::vector<std::tuple<unsigned short, unsigned short, unsigned short>> FlowFieldManagmentSystems::getNeighbors(unsigned int fieldX, unsigned int fieldY, unsigned int nodeX, unsigned int nodeY)
+std::vector<std::array<unsigned int, 5>> FlowFieldManagmentSystems::getNeighbors(std::array<unsigned int, 5> node)
 {
-	std::vector<std::tuple<unsigned short, unsigned short, unsigned short>> neighbors;
-
-	if (costFields.fields[get2DID(fieldX, fieldY, kFieldsWidth)].nodes[get2DID(nodeX, nodeY, kFieldWidth)] != 255)
+	std::vector<std::array<unsigned int, 5>> neighbors;
+	
+	// Get west neightbor if it is within the field and is not a wall
+	if (node[2] > 0 
+		&& costFields.fields[get2DID(node[0], node[1], kFieldsWidth)].nodes[get2DID(node[2] - 1, node[3], kFieldWidth)] != 255)
 	{
-
+		neighbors.emplace_back(node[0], node[1], node[2] - 1, node[3], node[4] + 1);
+	}
+	// East
+	if (node[2] < kFieldWidth 
+		&& costFields.fields[get2DID(node[0], node[1], kFieldsWidth)].nodes[get2DID(node[2] + 1, node[3], kFieldWidth)] != 255)
+	{
+		neighbors.emplace_back(node[0], node[1], node[2] + 1, node[3], node[4] + 1);
+	}
+	// North
+	if (node[3] > 0 
+		&& costFields.fields[get2DID(node[0], node[1], kFieldsWidth)].nodes[get2DID(node[2], node[3] - 1, kFieldWidth)] != 255)
+	{
+		neighbors.emplace_back(node[0], node[1], node[2], node[3] - 1, node[4] + 1);
+	}
+	// South
+	if (node[3] < kFieldWidth 
+		&& costFields.fields[get2DID(node[0], node[1], kFieldsWidth)].nodes[get2DID(node[2], node[3] + 1, kFieldWidth)] != 255)
+	{
+		neighbors.emplace_back(node[0], node[1], node[2], node[3] + 1, node[4] + 1);
 	}
 
-
-	return std::vector<std::tuple<unsigned short, unsigned short, unsigned short>>();
+	return neighbors;
 }
 
 unsigned int FlowFieldManagmentSystems::get2DID(unsigned int tmp_x, unsigned int tmp_y, unsigned int tmp_w)
@@ -29,6 +49,11 @@ unsigned int FlowFieldManagmentSystems::getFieldID(unsigned int tmp_x, unsigned 
 unsigned int FlowFieldManagmentSystems::getNodeID(unsigned int tmp_x, unsigned int tmp_y)
 {
 	return get2DID(std::floor((tmp_x / (int)Dude::diameter) % kFieldWidth), std::floor((tmp_y / (int)Dude::diameter) % kFieldWidth), kFieldWidth);
+}
+
+unsigned int FlowFieldManagmentSystems::getCostMapValueAtNode(std::array<unsigned int, 5> nodeID)
+{
+	return costFields.fields[get2DID(nodeID[0], nodeID[1], kFieldsWidth)].nodes[get2DID(nodeID[2], nodeID[3], kFieldWidth)];
 }
 
 FlowFieldManagmentSystems::FlowFieldManagmentSystems()
@@ -185,7 +210,7 @@ void FlowFieldManagmentSystems::render(Graphics& tmp_gfx)
 	}*/
 }
 
-void FlowFieldManagmentSystems::resetIntegrationField()
+void FlowFieldManagmentSystems::resetIntegrationFields()
 {
 	for (auto& field : integrationFields.fields)
 	{
@@ -229,20 +254,39 @@ void FlowFieldManagmentSystems::calculateIntegrationField(unsigned int tmp_x, un
 	int fieldY = std::floor(tmp_y / Dude::diameter / kFieldWidth);
 	int nodeX = std::floor((tmp_x / (int)Dude::diameter) % kFieldWidth);
 	int nodeY = std::floor((tmp_y / (int)Dude::diameter) % kFieldWidth);
-	/*unsigned int fieldID = getFieldID(tmp_x, tmp_y);
-	unsigned int nodeID = getNodeID(tmp_x, tmp_y);*/
+	unsigned int fieldID = getFieldID(tmp_x, tmp_y);
+	//unsigned int nodeID = getNodeID(tmp_x, tmp_y);
 
-	unsigned int d = 1;
+	unsigned int d = 0;
 
-	resetIntegrationField();
-	std::list<std::tuple<unsigned short, unsigned short, unsigned short>> openList;
+	resetIntegrationFields();
+	std::list<std::array<unsigned int, 5>> openList;
 
 	adjustIntegraionFields(tmp_x, tmp_y, 0);
-	openList.push_back({ fieldID, nodeID, d });
+	openList.push_back({ fieldX, fieldY, nodeX, nodeY, d });
 
 	while (openList.size() > 0)
 	{
-		std::tuple<unsigned short, unsigned short, unsigned short> currentID = openList.front();
+		std::array<unsigned int, 5> currentID = openList.front();
+		openList.pop_front();
+
+		std::vector<std::array<unsigned int, 5>> neighbors = getNeighbors(currentID);
+
+		for (auto it{neighbors.begin()}; it != neighbors.end(); it++)
+		{
+
+			if (d < (*it)[4])
+			{
+
+			}
+			if (std::find(openList.begin(), openList.end(), *it) == openList.end()) 
+			{
+				openList.emplace_back(*it);				
+			}
+			integrationFields.fields[get2DID((*it)[0], (*it)[1], kFieldsWidth)].nodes[get2DID((*it)[2], (*it)[3], kFieldWidth)]
+				= (*it)[4] + costFields.fields[get2DID((*it)[0], (*it)[1], kFieldsWidth)].nodes[get2DID((*it)[2], (*it)[3], kFieldWidth)];
+		}
+		openList.sort();
 	}
 }
 

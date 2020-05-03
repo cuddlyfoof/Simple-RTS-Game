@@ -38,10 +38,11 @@ public:
 
 private:
 
-	std::vector<std::tuple<unsigned short, unsigned short, unsigned short>> getNeighbors(unsigned int, unsigned int, unsigned int, unsigned int);
+	std::vector<std::array<unsigned int, 5>> getNeighbors(std::array<unsigned int, 5>);
 	unsigned int get2DID(unsigned int, unsigned int, unsigned int);
 	unsigned int getFieldID(unsigned int, unsigned int);
 	unsigned int getNodeID(unsigned int, unsigned int);
+	unsigned int getCostMapValueAtNode(std::array<unsigned int, 5>);
 
 	//unsigned int getValueByIndex();
 	//Node Arrays
@@ -55,7 +56,7 @@ public:
 
 	FlowFieldManagmentSystems();
 	void render(Graphics&);
-	void resetIntegrationField();
+	void resetIntegrationFields();
 	void adjustIntegraionFields(int, int, unsigned int);
 	void adjustCostMap(int, int, std::uint8_t);
 	void calculateIntegrationField(unsigned int, unsigned int);
