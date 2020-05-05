@@ -4,6 +4,7 @@
 #include "Dude.h"
 #include <array>
 #include <vector>
+#include "EntStruct.h"
 
 
 
@@ -37,15 +38,16 @@ public:
 	};
 
 private:
+
 	unsigned int get2DID(unsigned int, unsigned int, unsigned int);
 	unsigned int getFieldID(unsigned int, unsigned int);
 	unsigned int getNodeID(unsigned int, unsigned int);
 	unsigned int getCostMapValueAtNode(std::array<unsigned int, 5>);
 
 	std::vector<std::array<unsigned int, 5>> getNeighbors(std::array<unsigned int, 5>);
+	std::vector<std::array<unsigned int, 5>> getAStarNeighbors(std::array<unsigned int, 5>);
 
 	void calculateVectorField(std::uint8_t[kFieldWidth][kFieldWidth]);
-	void calculateIntegrationField(unsigned int, unsigned int);
 	
 
 	//unsigned int getValueByIndex();
@@ -60,9 +62,9 @@ public:
 
 	FlowFieldManagmentSystems();
 	void render(Graphics&);
-	void resetIntegrationFields();
+	void resetIntegrationField(unsigned int);
 	void adjustIntegraionFields(int, int, unsigned int);
 	void adjustCostMap(int, int, std::uint8_t);
-
-
+	void aStarIntegrationFields( EntStruct&, unsigned int, unsigned int);
+	void calculateIntegrationField(unsigned int, unsigned int);
 };
