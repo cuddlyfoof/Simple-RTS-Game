@@ -90,7 +90,7 @@ void Game::UpdateModel()
 				rightMouseY = wnd.mouse.GetPosY();				
 			}
 			EMS.moveSelectedDudes(Entities.staticSelectedDudesPos, Entities.movingSelectedDudesPos, rightMouseX, rightMouseY);
-			FMS.calculateIntegrationField(rightMouseX, rightMouseY);
+			FMS.aStarIntegrationFields(Entities, rightMouseX, rightMouseY);
 			rightWasPressed = true;
 		}
 		else

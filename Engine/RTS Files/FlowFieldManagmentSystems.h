@@ -45,7 +45,7 @@ private:
 	unsigned int getCostMapValueAtNode(std::array<unsigned int, 5>);
 
 	std::vector<std::array<unsigned int, 5>> getNeighbors(std::array<unsigned int, 5>);
-	std::vector<std::array<unsigned int, 5>> getAStarNeighbors(std::array<unsigned int, 5>);
+	std::vector<std::array<unsigned int, 4>> getNeighbors(std::array<unsigned int, 4>);
 
 	void calculateVectorField(std::uint8_t[kFieldWidth][kFieldWidth]);
 	
