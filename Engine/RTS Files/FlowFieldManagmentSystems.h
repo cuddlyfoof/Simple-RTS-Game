@@ -63,6 +63,7 @@ public:
 	FlowFieldManagmentSystems();
 	void render(Graphics&);
 	void resetIntegrationField(unsigned int);
+	void resetIntegrationFields();
 	void adjustIntegraionFields(int, int, unsigned int);
 	void adjustCostMap(int, int, std::uint8_t);
 	void aStarIntegrationFields( EntStruct&, unsigned int, unsigned int);
