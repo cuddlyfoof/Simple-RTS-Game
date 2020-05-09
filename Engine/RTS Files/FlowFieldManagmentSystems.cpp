@@ -40,35 +40,38 @@ std::vector<std::array<unsigned int, 5>> FlowFieldManagmentSystems::getNeighbors
 
 
 //Get neigbor for A* part (neighbors are contained to the screen parameters)
-std::vector<std::array<unsigned int, 4>> FlowFieldManagmentSystems::getNeighbors(std::array<unsigned int, 4> node)
+std::vector<FlowFieldManagmentSystems::Node> FlowFieldManagmentSystems::getNeighbors(Node& node)
 {
-	std::vector<std::array<unsigned int, 4>> neighbors;
+	std::vector<FlowFieldManagmentSystems::Node> neighbors;
 
 	// Get west neightbor if it is within the field and is not a wall
-	if (node[2] > 0
-		&& costFields.fields[get2DID(node[0], node[1], kFieldsWidth)].nodes[get2DID(node[2] - 1, node[3], kFieldWidth)] != 255)
+	if (node.x > 0
+		&& costFields.fields[get2DID(std::floor(node.x - 1) / 10, std::floor(node.y / 10), kFieldsWidth)].nodes[get2DID((node.x - 1) % 10, (node.y % 10), kFieldWidth)] != 255)
 	{
-		neighbors.push_back({ node[0], node[1] - 1, node[2],  integrationFields.fields[get2DID(std::floor(node[1] / 10), std::floor(node[2] / 10), kFieldsWidth)].nodes[get2DID((node[1] % 10) - 1, (node[2] % 10), kFieldWidth)] });
+		neighbors.push_back({ nullptr, (node.x - 1), node.y,
+			integrationFields.fields[get2DID(std::floor(node.x - 1) / 10, std::floor(node.y / 10), kFieldsWidth)].nodes[get2DID((node.x - 1) % 10, (node.y % 10), kFieldWidth)], node.distanceFromGoal });
 	}
 	// East
-	if (node[2] < kFieldWidth - 1
-		&& costFields.fields[get2DID(node[0], node[1], kFieldsWidth)].nodes[get2DID(node[2] + 1, node[3], kFieldWidth)] != 255)
+	if (node.x < kCostMapWidth - 1
+		&& costFields.fields[get2DID(std::floor(node.x + 1) / 10, std::floor(node.y / 10), kFieldsWidth)].nodes[get2DID((node.x + 1) % 10, (node.y % 10), kFieldWidth)] != 255)
 	{
-		neighbors.push_back({ node[0], node[1] + 1, node[2], integrationFields.fields[get2DID(std::floor(node[1] / 10), std::floor(node[2] / 10), kFieldsWidth)].nodes[get2DID((node[1] % 10) + 1, (node[2] % 10), kFieldWidth)] });
+		neighbors.push_back({ nullptr, (node.x + 1), node.y,
+			integrationFields.fields[get2DID(std::floor(node.x + 1) / 10, std::floor(node.y / 10), kFieldsWidth)].nodes[get2DID((node.x + 1) % 10, (node.y % 10), kFieldWidth)], node.distanceFromGoal });
 	}
 	// North
-	if (node[3] > 0
-		&& costFields.fields[get2DID(node[0], node[1], kFieldsWidth)].nodes[get2DID(node[2], node[3] - 1, kFieldWidth)] != 255)
+	if (node.y > 0
+		&& costFields.fields[get2DID(std::floor(node.x / 10), std::floor(node.y - 1) / 10, kFieldsWidth)].nodes[get2DID((node.x % 10), (node.y - 1) % 10, kFieldWidth)] != 255)
 	{
-		neighbors.push_back({ node[0], node[1], node[2] - 1, integrationFields.fields[get2DID(std::floor(node[1] / 10), std::floor(node[2] / 10), kFieldsWidth)].nodes[get2DID((node[1] % 10), (node[2] % 10) - 1, kFieldWidth)] });
+		neighbors.push_back({ nullptr, node.x, (node.y - 1),
+			integrationFields.fields[get2DID(std::floor(node.x / 10), std::floor(node.y - 1) / 10, kFieldsWidth)].nodes[get2DID((node.x % 10), (node.y - 1) % 10, kFieldWidth)], node.distanceFromGoal });
 	}
 	// South
-	if (node[3] < kFieldWidth - 1
-		&& costFields.fields[get2DID(node[0], node[1], kFieldsWidth)].nodes[get2DID(node[2], node[3] + 1, kFieldWidth)] != 255)
+	if (node.y < kCostMapWidth - 1
+		&& costFields.fields[get2DID(std::floor(node.x / 10), std::floor(node.y + 1) / 10, kFieldsWidth)].nodes[get2DID((node.x % 10), (node.y + 1) % 10, kFieldWidth)] != 255)
 	{
-		neighbors.push_back({ node[0], node[1], node[2] + 1, integrationFields.fields[get2DID(std::floor(node[1] / 10), std::floor(node[2] / 10), kFieldsWidth)].nodes[get2DID((node[1] % 10), (node[2] % 10) + 1, kFieldWidth)] });
+		neighbors.push_back({ nullptr, node.x, (node.y + 1),
+			integrationFields.fields[get2DID(std::floor(node.x / 10), std::floor(node.y + 1) / 10, kFieldsWidth)].nodes[get2DID((node.x % 10), (node.y + 1) % 10, kFieldWidth)], node.distanceFromGoal });
 	}
-
 	return neighbors;
 }
 
@@ -314,8 +317,8 @@ void FlowFieldManagmentSystems::adjustCostMap(int tmp_x, int tmp_y, std::uint8_t
 
 void FlowFieldManagmentSystems::aStarIntegrationFields( EntStruct& tmp_ents, unsigned int tmp_x, unsigned int tmp_y)
 {
-	auto getFieldCoord = [&](unsigned int xy) { return std::floor(xy / Dude::diameter / kFieldWidth); };
-	auto getNodeCoord = [&](unsigned int xy) { return std::floor(xy / (int)Dude::diameter); };
+	auto getFieldCoord = [&](unsigned int xy) { return (unsigned int)std::floor(xy / Dude::diameter / kFieldWidth); };
+	auto getNodeCoord = [&](unsigned int xy) { return (unsigned int)std::floor(xy / (int)Dude::diameter); };
 
 	auto getDistance = [](unsigned int x1, unsigned int y1, unsigned int x2, unsigned int y2)
 	{
@@ -334,7 +337,7 @@ void FlowFieldManagmentSystems::aStarIntegrationFields( EntStruct& tmp_ents, uns
 
 	for (auto& dude : tmp_ents.staticSelectedDudesPos)
 	{
-		if (std::find(uniqueFieldCoords.begin(), uniqueFieldCoords.end(), (getFieldCoord(dude.x), getFieldCoord(dude.y)) ) != uniqueFieldCoords.end())
+		if (std::find(uniqueFieldCoords.begin(), uniqueFieldCoords.end(), std::array<unsigned int, 4>({ getFieldCoord(dude.x), getFieldCoord(dude.y), getNodeCoord(dude.x), getNodeCoord(dude.y) })) == uniqueFieldCoords.end())
 		{
 			uniqueFieldCoords.push_back({ getFieldCoord(dude.x), getFieldCoord(dude.y), getNodeCoord(dude.x), getNodeCoord(dude.y) });
 		}
@@ -342,77 +345,82 @@ void FlowFieldManagmentSystems::aStarIntegrationFields( EntStruct& tmp_ents, uns
 
 	for (auto& dude : tmp_ents.movingSelectedDudesPos)
 	{
-		if (std::find(uniqueFieldCoords.begin(), uniqueFieldCoords.end(), std::array<unsigned int, 2>({ getFieldCoord(dude.x), getFieldCoord(dude.y) })) != uniqueFieldCoords.end())
+		if (std::find(uniqueFieldCoords.begin(), uniqueFieldCoords.end(), std::array<unsigned int, 4>({ getFieldCoord(dude.x), getFieldCoord(dude.y), getNodeCoord(dude.x), getNodeCoord(dude.y) })) == uniqueFieldCoords.end())
 		{
 			uniqueFieldCoords.push_back({ getFieldCoord(dude.x), getFieldCoord(dude.y), getNodeCoord(dude.x), getNodeCoord(dude.y) });
 		}
 	}
 
+	resetIntegrationFields();
 	
 	//Go through each unique field ID and calculate a path to the goal
 	for (auto& ent : uniqueFieldCoords)
-	{
-		resetIntegrationFields();
-		std::list<std::array<unsigned int, 4>> openList;
-		std::array<std::array<unsigned int, 2>, kCostMapWidth * kCostMapHeight> nodesParentID;
+	{		
+		std::list<Node> openList;
+		std::vector<Node> nodes;
 
-		// global distance to goal 0, Current Coords 1, 2, total distance traveled 3.		
-		openList.push_back({ (unsigned int)getDistance(nodeX, nodeY, ent[2], ent[3]), ent[2], ent[3], 0 });
-		nodesParentID[get2DID(ent[2], ent[3], kCostMapWidth)] = { 0, 0 };
+				
+		openList.emplace_back(Node{ nullptr, ent[2], ent[3], 0, (unsigned int)getDistance(nodeX, nodeY, ent[2], ent[3]) });		
+		integrationFields.fields[get2DID(std::floor(openList.front().x / kFieldWidth), std::floor(openList.front().y / kFieldWidth), kFieldsWidth)].nodes[get2DID((openList.front().x % kFieldWidth), (openList.front().y % kFieldWidth), kFieldWidth)]
+			= openList.front().distanceTraveled;
 
-		while (openList.size() > 0)
+		//If the goal is not reachable, or I have reached the goal; break
+		while (openList.size() > 0 && (openList.front().x != nodeX && openList.front().y != nodeY))
 		{
-			std::array<unsigned int, 4> currentID = openList.front();
-			if (currentID[1] == nodeX && currentID[2] == nodeY )
-			{
-				break;
-			}
+			Node currentID = openList.front();
+			nodes.push_back(currentID);
 			openList.pop_front();
 
-			std::vector<std::array<unsigned int, 4>> neighbors = getNeighbors(currentID);
+			std::vector<Node> neighbors = getNeighbors(nodes.back());
 
 			for (auto it{ neighbors.begin() }; it != neighbors.end(); it++)
-			{
-				unsigned int current;
-				unsigned int neighborsTravelCost = costFields.fields[get2DID(std::floor((*it)[1] / 10), std::floor((*it)[2] / 10), kFieldsWidth)].nodes[get2DID(((*it)[1] % 10), ((*it)[2] % 10), kFieldWidth)];
+			{				
 				//if the current node + distance + cost is less than the total distance traveled to its neighbor, the current node can update its neighbor
-				if (currentID[4] + 1 < (*it)[4])
+				if (((currentID.distanceTraveled + 1) < it->distanceTraveled) && (std::find_if(openList.begin(), openList.end(), [&cm = *it]
+				(Node& m) -> bool { return &cm == &m; }) == openList.end()))
 				{
-					// set updated neighbors parent to currentIDs coord in 1D
-					nodesParentID[get2DID((*it)[1], (*it)[2], kCostMapWidth)] = { (*it)[1], (*it)[2] };
-					(*it)[0] = (unsigned int)getDistance(nodeX, nodeY, currentID[2], currentID[3]);
-					if (std::find(openList.begin(), openList.end(), *it) == openList.end())
-					{
-						(*it)[4] = currentID[4] + 1 + neighborsTravelCost;
+						unsigned int neighborsTravelCost = costFields.fields[get2DID(std::floor(it->x / kFieldWidth), std::floor(it->y / kFieldWidth), kFieldsWidth)].nodes[get2DID((it->x % kFieldWidth), (it->y % kFieldWidth), kFieldWidth)];
+						it->distanceFromGoal = (unsigned int)getDistance(nodeX, nodeY, currentID.x, currentID.y);
+						it->distanceTraveled = currentID.distanceTraveled + 1 + neighborsTravelCost;
+						it->parent = &nodes.back();
 						openList.emplace_back(*it);
-					}
-					integrationFields.fields[get2DID((*it)[0], (*it)[1], kFieldsWidth)].nodes[get2DID((*it)[2], (*it)[3], kFieldWidth)] = (*it)[4];
+						integrationFields.fields[get2DID(std::floor(it->x / 10), std::floor(it->y / 10), kFieldsWidth)].nodes[get2DID((it->x % 10), (it->y % 10), kFieldWidth)] = it->distanceTraveled;
 				}
 			}
-			openList.sort();
+			openList.sort([](const Node& lhs, const Node& rhs) { return lhs.distanceFromGoal < rhs.distanceFromGoal; });
 		}
 
-		std::array<unsigned int, 2> currentNode = { nodeX, nodeY };
+		Node currentNode;
+
+		for (auto it{nodes.begin()}; it != nodes.end(); it++)
+		{
+			if (it->x == nodeX && it->y == nodeY)
+			{
+				currentNode = *it;
+			}
+		}
 
 		calculateIntegrationField(nodeX, nodeY);
 
-		while (currentNode[0] != 0 && currentNode[1] != 0)
+		// Send the coord of every node that intersects with the edge of a field.
+		while (currentNode.parent != nullptr)
 		{
-			if (currentNode[0] % 10 == 0 || currentNode[1] % 10 == 0)
+			if (currentNode.x % kFieldWidth == 0 || currentNode.y % kFieldWidth == 0)
 			{
-				calculateIntegrationField(currentNode[0], currentNode[1]);
+				calculateIntegrationField(currentNode.x, currentNode.y);
 			}
+			currentNode = *currentNode.parent;
 		}
 	}
 }
 
-void FlowFieldManagmentSystems::calculateIntegrationField(unsigned int nodeX, unsigned int nodeY)
+void FlowFieldManagmentSystems::calculateIntegrationField(unsigned int tmp_nodeX, unsigned int tmp_nodeY)
 {
-	unsigned int fieldX = std::floor(nodeX / kFieldWidth);
-	unsigned int fieldY = std::floor(nodeY / kFieldWidth);
-	unsigned int nodeX = std::floor(nodeX % kFieldWidth);
-	unsigned int nodeY = std::floor(nodeY % kFieldWidth);
-	unsigned int fieldID = get2DID(nodeX, nodeY, kCostMapWidth);
+	unsigned int fieldX = std::floor(tmp_nodeX / kFieldWidth);
+	unsigned int fieldY = std::floor(tmp_nodeY / kFieldWidth);
+	unsigned int nodeX = std::floor(tmp_nodeX % kFieldWidth);
+	unsigned int nodeY = std::floor(tmp_nodeY % kFieldWidth);
+	unsigned int fieldID = get2DID(std::floor(tmp_nodeX / kFieldWidth), std::floor(tmp_nodeY / kFieldWidth), kFieldsWidth);
 	//unsigned int nodeID = getNodeID(tmp_x, tmp_y);
 
 	resetIntegrationField(fieldID);

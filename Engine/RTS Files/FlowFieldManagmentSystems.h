@@ -37,6 +37,14 @@ public:
 		std::array<Field, (kFieldsHeight * kFieldsWidth)> fields;
 	};
 
+	struct Node
+	{
+		Node* parent;
+		unsigned int x, y;
+		unsigned int distanceTraveled;
+		unsigned int distanceFromGoal;
+	};
+
 private:
 
 	unsigned int get2DID(unsigned int, unsigned int, unsigned int);
@@ -45,7 +53,7 @@ private:
 	unsigned int getCostMapValueAtNode(std::array<unsigned int, 5>);
 
 	std::vector<std::array<unsigned int, 5>> getNeighbors(std::array<unsigned int, 5>);
-	std::vector<std::array<unsigned int, 4>> getNeighbors(std::array<unsigned int, 4>);
+	std::vector<Node> getNeighbors(Node&);
 
 	void calculateVectorField(std::uint8_t[kFieldWidth][kFieldWidth]);
 	
