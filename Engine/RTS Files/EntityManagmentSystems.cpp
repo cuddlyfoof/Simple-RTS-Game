@@ -645,7 +645,7 @@ void EntityManagmentSystems::renderResources(Graphics& _gfx)
 	{
 		for (int _x = 15; _x <= resources; _x++)
 		{
-			_gfx.PutPixel(_x, _y, { 255,255,255 });
+			_gfx.PutPixel(_x, _y, { 224, 146, 219 });
 		}
 	}
 }
