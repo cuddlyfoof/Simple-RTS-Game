@@ -85,7 +85,8 @@ private:
 	//std::array<std::array<std::uint8_t, kCostMapWidth>, kCostMapHeight> costMap;
 	//Fields costMap;
 	// 4D arrays be wack
-	std::array<std::uint8_t, kCostMapHeight* kCostMapWidth> kCostMap;
+	std::array<std::uint8_t, kCostMapHeight* kCostMapWidth> newCostMap;
+	std::array<unsigned short, kCostMapHeight* kCostMapWidth> newIntegrationFields;
 	CostFields costFields;
 	Fields integrationFields;
 

@@ -641,9 +641,14 @@ void EntityManagmentSystems::applyFriction(Vector6& _ent, const float friction)
 
 void EntityManagmentSystems::renderResources(Graphics& _gfx)
 {
+	auto mapRange = [&](int x, int in_min, int in_max, int out_min, int out_max)
+	{
+		return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
+	};
+	float resourceRenderScale = mapRange(resources, 0, 1000, 15, Graphics::ScreenWidth - 1);
 	for (int _y = 15; _y <= 25; _y++)
 	{
-		for (int _x = 15; _x <= resources; _x++)
+		for (int _x = 15; _x <= resourceRenderScale; _x++)
 		{
 			_gfx.PutPixel(_x, _y, { 224, 146, 219 });
 		}

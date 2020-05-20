@@ -229,10 +229,11 @@ FlowFieldManagmentSystems::FlowFieldManagmentSystems()
 		}// Screen Fields Column / Width
 	}// Screen Fields Row / Height
 
-	kCostMap.fill(1);
-	for (auto it{kCostMap.begin()}; it != kCostMap.end(); it++)
+	newIntegrationFields.fill(65535);
+	newCostMap.fill(1);
+	for (auto it{newCostMap.begin()}; it != newCostMap.end(); it++)
 	{
-		unsigned int index = (it - kCostMap.begin());
+		unsigned int index = (it - newCostMap.begin());
 		unsigned int yOff = std::floor(index / kCostMapWidth);
 		unsigned int xOff = index % kCostMapWidth;
 		if (xOff == 0 || xOff == (kCostMapWidth - 1))
@@ -334,9 +335,9 @@ void FlowFieldManagmentSystems::render(Graphics& tmp_gfx)
 	//	}// Screen Fields Column / Width
 	//}// Screen Fields Row / Height
 
-	for (auto it{ kCostMap.begin() }; it != kCostMap.end(); it++)
+	for (auto it{ newCostMap.begin() }; it != newCostMap.end(); it++)
 	{
-		unsigned int index = (it - kCostMap.begin());
+		unsigned int index = (it - newCostMap.begin());
 		unsigned int yOff = (std::floor(index / kCostMapWidth)) * Dude::diameter;
 		unsigned int xOff = (index % kCostMapWidth) * Dude::diameter;
 		if (*it == 255)
@@ -349,28 +350,43 @@ void FlowFieldManagmentSystems::render(Graphics& tmp_gfx)
 		}
 	}
 
-	int x = 0, y = 0;
-
-	for (int y1 = 0; y1 < kFieldsHeight; y1++)// Screen Fields Row / Height
+	for (auto it{ newIntegrationFields.begin() }; it != newIntegrationFields.end(); it++)
 	{
-		for (int x1 = 0; x1 < kFieldsWidth; x1++) // Screen Fields Column / Width
+		unsigned int index = (it - newIntegrationFields.begin());
+		unsigned int yOff = (std::floor(index / kCostMapWidth)) * Dude::diameter;
+		unsigned int xOff = (index % kCostMapWidth) * Dude::diameter;
+		if (*it == 255)
 		{
-			y = y1 * 200;
-			for (int y2 = 0; y2 < kFieldWidth; y2++)// Field Row / Height
-			{
-				x = x1 * 200;
-				for (int x2 = 0; x2 < kFieldWidth; x2++)// Field Column / Width
-				{
-					if (integrationFields.fields[get2DID(x1, y1, kFieldsWidth)].nodes[get2DID(x2, y2, kFieldWidth)] <= 255)
-					{
-						tmp_gfx.drawRect(x, y, x + Dude::diameter, y + Dude::diameter, { 0 , (unsigned char)integrationFields.fields[get2DID(x1, y1, kFieldsWidth)].nodes[get2DID(x2, y2, kFieldWidth)], 0 });
-					}
-					x += 20;
-				}// Field Column / Width	
-				y += 20;
-			}// Field Row / Height
-		}// Screen Fields Column / Width
-	}// Screen Fields Row / Height
+			tmp_gfx.drawRect(xOff, yOff, (xOff + Dude::diameter), (yOff + Dude::diameter), { 255, 255, 255 });
+		}
+		else if (*it <= 254 && *it >= 2)
+		{
+			tmp_gfx.drawRect(xOff, yOff, (xOff + Dude::diameter), (yOff + Dude::diameter), { (unsigned char)(*it), 0, 0 });
+		}
+	}
+
+	//int x = 0, y = 0;
+
+	//for (int y1 = 0; y1 < kFieldsHeight; y1++)// Screen Fields Row / Height
+	//{
+	//	for (int x1 = 0; x1 < kFieldsWidth; x1++) // Screen Fields Column / Width
+	//	{
+	//		y = y1 * 200;
+	//		for (int y2 = 0; y2 < kFieldWidth; y2++)// Field Row / Height
+	//		{
+	//			x = x1 * 200;
+	//			for (int x2 = 0; x2 < kFieldWidth; x2++)// Field Column / Width
+	//			{
+	//				if (integrationFields.fields[get2DID(x1, y1, kFieldsWidth)].nodes[get2DID(x2, y2, kFieldWidth)] <= 255)
+	//				{
+	//					tmp_gfx.drawRect(x, y, x + Dude::diameter, y + Dude::diameter, { 0 , (unsigned char)integrationFields.fields[get2DID(x1, y1, kFieldsWidth)].nodes[get2DID(x2, y2, kFieldWidth)], 0 });
+	//				}
+	//				x += 20;
+	//			}// Field Column / Width	
+	//			y += 20;
+	//		}// Field Row / Height
+	//	}// Screen Fields Column / Width
+	//}// Screen Fields Row / Height
 
 	//I couldnt get this version to work :(
 	/*for (auto field{ costMap.fields.begin() }; field != costMap.fields.end();)
@@ -441,7 +457,7 @@ void FlowFieldManagmentSystems::adjustCostMap(int tmp_x, int tmp_y, std::uint8_t
 
 	unsigned int nodeID = get2DID(tmp_x / Dude::diameter, tmp_y / Dude::diameter, kCostMapWidth);
 
-	kCostMap[nodeID] = nodeCostValue;
+	newCostMap[nodeID] = nodeCostValue;
 
 	//costFields.fields[fieldID].nodes[nodeID] = nodeCostValue;
 
@@ -507,7 +523,7 @@ void FlowFieldManagmentSystems::aStarIntegrationFields( EntStruct& tmp_ents, uns
 		std::array<int, kCostMapWidth* kCostMapHeight> paths;
 		paths.fill(-1);
 
-		if (astar(kCostMap, kCostMapHeight, kCostMapWidth, get2DID(ent[2], ent[3], kCostMapWidth),
+		if (astar(newCostMap, kCostMapHeight, kCostMapWidth, get2DID(ent[2], ent[3], kCostMapWidth),
 			nodeID, (false), paths))
 		{
 			int currentNode = paths[nodeID];
@@ -547,16 +563,21 @@ void FlowFieldManagmentSystems::aStarIntegrationFields( EntStruct& tmp_ents, uns
 void FlowFieldManagmentSystems::calculateIntegrationField(unsigned int nodeIndex)
 {
 	
-	unsigned int fieldsID = std::floor(nodeIndex / 100);
-	unsigned int fieldID = nodeIndex % 100;
+	unsigned int fieldsID = std::floor(nodeIndex / kFieldSize);
+	//unsigned int fieldID = nodeIndex % kFieldSize;
 
 	unsigned int w = kCostMapWidth, h = kCostMapHeight;
 	bool diag_ok = false;
 
 	//unsigned int nodeID = getNodeID(tmp_x, tmp_y);
 
-	resetIntegrationField(fieldsID);
-	integrationFields.fields[fieldsID].nodes[fieldID] = 0;
+	for (int i = nodeIndex - (nodeIndex % kCostMapWidth); i < kFieldSize; i++)
+	{
+		newIntegrationFields[i] = 65535;
+	}
+
+	//resetIntegrationField(fieldsID);
+	newIntegrationFields[nodeIndex] = 0;
 
 	std::priority_queue<Node> nodes_to_visit;
 	nodes_to_visit.emplace(nodeIndex, 0);
@@ -569,29 +590,30 @@ void FlowFieldManagmentSystems::calculateIntegrationField(unsigned int nodeIndex
 
 		nodes_to_visit.pop();
 
+
 		int row = cur.idx / w;
 		int col = cur.idx % w;
+		int curFieldsID = std::floor(cur.idx / kFieldSize), curFieldID = cur.idx % kFieldSize;
 		// check bounds and find up to eight neighbors: top to bottom, left to right
-		nbrs[0] = (diag_ok && row > 0 && col > 0) ? cur.idx - w - 1 : -1;
-		nbrs[1] = (row > 0) ? cur.idx - w : -1;
-		nbrs[2] = (diag_ok && row > 0 && col + 1 < w) ? cur.idx - w + 1 : -1;
-		nbrs[3] = (col > 0) ? cur.idx - 1 : -1;
-		nbrs[4] = (col + 1 < w) ? cur.idx + 1 : -1;
-		nbrs[5] = (diag_ok && row + 1 < h && col > 0) ? cur.idx + w - 1 : -1;
-		nbrs[6] = (row + 1 < h) ? cur.idx + w : -1;
-		nbrs[7] = (diag_ok && row + 1 < h && col + 1 < w) ? cur.idx + w + 1 : -1;
+		nbrs[0] = (diag_ok && row > 0 && col > 0 && newCostMap[(cur.idx - w - 1)] != 255) ? cur.idx - w - 1 : -1;
+		nbrs[1] = (row > 0 && newCostMap[cur.idx - w] != 255) ? cur.idx - w : -1;
+		nbrs[2] = (diag_ok && row > 0 && col + 1 < w && newCostMap[(cur.idx - w + 1)] != 255) ? cur.idx - w + 1 : -1;
+		nbrs[3] = (col > 0 && newCostMap[cur.idx - 1] != 255) ? cur.idx - 1 : -1;
+		nbrs[4] = (col + 1 < w && newCostMap[(cur.idx + 1)] != 255) ? cur.idx + 1 : -1;
+		nbrs[5] = (diag_ok && row + 1 < h && col > 0 && newCostMap[cur.idx + w - 1] != 255) ? cur.idx + w - 1 : -1;
+		nbrs[6] = (row + 1 < h && newCostMap[cur.idx + w] != 255) ? cur.idx + w : -1;
+		nbrs[7] = (diag_ok && row + 1 < h && col + 1 < w && newCostMap[cur.idx + w + 1] != 255) ? cur.idx + w + 1 : -1;
 
 		for (int i = 0; i < 8; ++i) {
-			if (nbrs[i] >= 0) {
-				int curFieldsID = cur.idx / kFieldSize, curFieldID = cur.idx % kFieldSize;
-				int nbrsFieldsID = nbrs[i] / kFieldSize, nbrsFieldID = nbrs[i] % kFieldSize;
+			if (nbrs[i] >= 0 && std::floor(nbrs[i] / kFieldSize) == fieldsID) {
+				//int nbrsFieldsID = std::floor(nbrs[i] / kFieldSize), nbrsFieldID = nbrs[i] % kFieldSize;
 				// the sum of the cost so far and the cost of this move
-				float new_cost = integrationFields.fields[curFieldsID].nodes[curFieldID] + kCostMap[nbrs[i]];
-				if (new_cost < integrationFields.fields[nbrsFieldsID].nodes[nbrsFieldID]) {
+				float new_cost = newIntegrationFields[cur.idx] + newCostMap[nbrs[i]];
+				if (new_cost < newIntegrationFields[nbrs[i]]) {
 					// paths with lower expected cost are explored first
 					nodes_to_visit.emplace(nbrs[i], new_cost + 1);
 
-					integrationFields.fields[nbrsFieldsID].nodes[nbrsFieldID] = new_cost;
+					newIntegrationFields[nbrs[i]] = new_cost;
 				}
 			}
 		}
